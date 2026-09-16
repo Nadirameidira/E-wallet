@@ -1,17 +1,7 @@
 # aplikasi_android_ewallet
 
-A new Flutter project.
+Project Ujian Tengah Semester, membuat Aplikasi mobile E-wallet seperti MyBca
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Anggota Kelompok
+Meisa Putri Nadira 535250066 (Lead)
+Lulu Lydia Andrean 535250061 
