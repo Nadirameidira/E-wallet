@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
+import 'dashboard_widget.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -77,7 +78,41 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {},
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      String rawInput = _email.text.split('@').first;
+
+                      // 1. Hapus semua angka
+                      String noNumbers = rawInput.replaceAll(RegExp(r'[0-9]'), '');
+
+                      // 2. Ganti pemisah karakter (. _ -) jadi spasi
+                      String withSpaces = noNumbers.replaceAll(RegExp(r'[\._-]'), ' ');
+
+                      // 3. PISAHKAN SUKU KATA / NAMA DEMPET (Paling Ampuh!)
+                      // Memisah huruf kapital (StesaAurel -> Stesa Aurel) 
+                      // atau menyisipkan spasi sebelum vokal jika berupa gabungan kata
+                      String formatted = withSpaces.replaceAllMapped(
+                        RegExp(r'(?<=[a-z])(?=[A-Z])'), 
+                        (Match m) => ' '
+                      );
+
+                      // 4. Ubah tiap kata jadi Huruf Kapital di Awal (Title Case)
+                      String cleanName = formatted
+                          .split(' ')
+                          .where((word) => word.isNotEmpty)
+                          .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
+                          .join(' ');
+
+                      if (cleanName.isEmpty) cleanName = 'User';           
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => DashboardWidget(userName: cleanName),
+                            ),
+                       );
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.greenBtn,
                       shape: RoundedRectangleBorder(
