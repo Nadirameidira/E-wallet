@@ -10,7 +10,7 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(238, 230, 198, 1),
+      backgroundColor: const Color.fromARGB(255, 238, 236, 226),
       body: Stack(
         children: [
           // rumput
@@ -22,7 +22,6 @@ class WelcomePage extends StatelessWidget {
               height: 180,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  // Ganti dengan asset rumput kamu
                   image: AssetImage('assets/images/grass.png'),
                   fit: BoxFit.cover,
                 ),
@@ -30,41 +29,27 @@ class WelcomePage extends StatelessWidget {
             ),
           ),
 
-          SafeArea(
+          // kucing + tombol (satu grup, diatur dari bawah)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 200,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // Icon headset kanan atas
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 16, top: 8),
-                    child: IconButton(
-                      onPressed: () {
-                      },
-                      icon: const Icon(
-                        Icons.support_agent,
-                        size: 36,
-                        color: AppColors.orange,
-                      ),
-                    ),
-                  ),
-                ),
-
-                const Spacer(flex: 2),
-
-                // Gambar kucing
+                // kucing
                 Image.asset(
                   'assets/images/cat.png',
                   width: 220,
                   fit: BoxFit.contain,
                 ),
 
-                const Spacer(flex: 1),
+                const SizedBox(height: 8),
 
                 // LOGIN
                 _buildButton(
                   text: 'LOGIN',
-                  color: AppColors.greenBtn,
+                  color: const Color.fromARGB(255, 196, 215, 170),
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const LoginPage()),
@@ -72,10 +57,10 @@ class WelcomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Tombol REKENING BARU
+                // REKENING BARU
                 _buildButton(
                   text: 'REKENING BARU',
-                  color: AppColors.yellowBtn,
+                  color: const Color.fromRGBO(238, 231, 208, 1),
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const RegisterPage()),
@@ -83,7 +68,7 @@ class WelcomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Tombol INFO
+                // INFO
                 _buildButton(
                   text: 'INFO',
                   color: AppColors.greenBtn,
@@ -92,9 +77,25 @@ class WelcomePage extends StatelessWidget {
                     MaterialPageRoute(builder: (_) => const InfoPage()),
                   ),
                 ),
-
-                const Spacer(flex: 3),
               ],
+            ),
+          ),
+
+          // icon headset kanan atas
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16, top: 8),
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.support_agent,
+                    size: 36,
+                    color: AppColors.orange,
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -118,7 +119,7 @@ class WelcomePage extends StatelessWidget {
             backgroundColor: color,
             elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(28), // pill shape
+              borderRadius: BorderRadius.circular(28),
             ),
           ),
           child: Text(
