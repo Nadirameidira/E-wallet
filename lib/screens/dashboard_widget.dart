@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import 'topup_method.dart';
+import 'history_screen.dart';
 
 class DashboardWidget extends StatelessWidget {
   final String userName;
@@ -91,7 +92,12 @@ class DashboardWidget extends StatelessWidget {
                     icon: Icons.history,
                     label: 'History',
                     color: const Color.fromARGB(255, 220, 237, 193),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const HistoryScreen()),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     context: context,
