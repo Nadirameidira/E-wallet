@@ -7,13 +7,17 @@ import 'info.dart';
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
+  static const double catLebar = 220;
+  static const double kucingTurun = 20;
+  static const double jarakKucingTombol = 17;
+  static const double posisiDariBawah = 180;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 238, 236, 226),
       body: Stack(
         children: [
-          // rumput
           Positioned(
             bottom: 0,
             left: 0,
@@ -29,25 +33,42 @@ class WelcomePage extends StatelessWidget {
             ),
           ),
 
-          // kucing + tombol (satu grup, diatur dari bawah)
+          const Positioned(
+            top: 90,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
+                'C🐾(sh)t',
+                style: TextStyle(
+                  fontSize: 44,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFCC5B2A),
+                  letterSpacing: 1.5,
+                ),
+              ),
+            ),
+          ),
+
           Positioned(
             left: 0,
             right: 0,
-            bottom: 200,
+            bottom: posisiDariBawah,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // kucing
-                Image.asset(
-                  'assets/images/cat.png',
-                  width: 220,
-                  fit: BoxFit.contain,
+                Transform.translate(
+                  offset: Offset(0, kucingTurun),
+                  child: Image.asset(
+                    'assets/images/cat.png',
+                    width: catLebar,
+                    fit: BoxFit.contain,
+                  ),
                 ),
 
-                const SizedBox(height: 8),
+                SizedBox(height: jarakKucingTombol),
 
-                // LOGIN
-                _buildButton(
+                _tombol(
                   text: 'LOGIN',
                   color: const Color.fromARGB(255, 196, 215, 170),
                   onTap: () => Navigator.push(
@@ -57,10 +78,9 @@ class WelcomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // REKENING BARU
-                _buildButton(
+                _tombol(
                   text: 'REKENING BARU',
-                  color: const Color.fromRGBO(238, 231, 208, 1),
+                  color: const Color.fromARGB(255, 251, 229, 119),
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const RegisterPage()),
@@ -68,8 +88,7 @@ class WelcomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // INFO
-                _buildButton(
+                _tombol(
                   text: 'INFO',
                   color: AppColors.greenBtn,
                   onTap: () => Navigator.push(
@@ -81,7 +100,6 @@ class WelcomePage extends StatelessWidget {
             ),
           ),
 
-          // icon headset kanan atas
           SafeArea(
             child: Align(
               alignment: Alignment.topRight,
@@ -103,7 +121,7 @@ class WelcomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildButton({
+  Widget _tombol({
     required String text,
     required Color color,
     required VoidCallback onTap,
