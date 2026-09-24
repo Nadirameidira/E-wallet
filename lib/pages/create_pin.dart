@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
-import 'dashboard_screen.dart';
+import 'dashboard_widget.dart';
 import 'topup_pin.dart'; // Ngarah ke variabel globalUserPin
 
 class CreatePinPage extends StatefulWidget {
@@ -56,7 +56,7 @@ class _CreatePinPageState extends State<CreatePinPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => DashboardScreen(userName: widget.userName),
+        builder: (_) => DashboardWidget(userName: widget.userName),
       ),
     );
   }

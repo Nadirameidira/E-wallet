@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Warna utama dari desain
-  static const orange = Color(0xFFE85D26);      // text & kucing
-  static const greenBtn = Color(0xFFD9E8C5);    // tombol hijau pastel
-  static const greenText = Color(0xFFE85D26);   // text di tombol hijau
-  static const yellowBtn = Color(0xFFF4E0A0);   // tombol kuning
-  static const bg = Color(0xFFFFFDF5);          // background cream
+  static const Color orange = Color(0xFFAB4B25);
+  static const Color greenBtn = Color(0xFFC4D7AA);
+  static const Color bg = Color.fromARGB(255, 238, 236, 226);
+  static const Color darkG = Color(0xFF8DB654);
 }
