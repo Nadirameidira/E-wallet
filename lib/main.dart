@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'services/auth_service.dart';
-import 'pages/welcome.dart';
-import 'pages/dashboard.dart';
+import 'screens/welcome.dart';
+import 'screens/dashboard_widget.dart';
 
 void main() => runApp(const MyApp());
 
@@ -27,7 +27,11 @@ class _SplashRouter extends StatelessWidget {
 
   Future<Widget> _resolve() async {
     final loggedIn = await AuthService.isLoggedIn();
-    return loggedIn ? const DashboardPage() : const WelcomePage();
+    if (loggedIn) {
+      final user = await AuthService.getCurrentUser();
+      return DashboardWidget(userName: user?.namaLengkap ?? 'User');
+    }
+    return const WelcomePage();
   }
 
   @override
