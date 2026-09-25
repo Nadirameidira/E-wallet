@@ -61,7 +61,7 @@ class DashboardScreen extends StatelessWidget {
                     child: Image.asset(
                       'assets/images/cat.png',
                       height: 50,
-                      errorBuilder: (_, __, ___) => const Icon(
+                      errorBuilder: (_, _, _) => const Icon(
                         Icons.pets,
                         color: AppColors.orange,
                         size: 40,
