@@ -59,7 +59,7 @@ class WelcomePage extends StatelessWidget {
                       height: 36,
                       color: const Color(0xFFCC5B2A),
                       colorBlendMode: BlendMode.srcIn,
-                      errorBuilder: (_, __, ___) => const Text(
+                      errorBuilder: (_, _, _) => const Text(
                         '🐾',
                         style: TextStyle(fontSize: 36),
                       ),
