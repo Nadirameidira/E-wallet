@@ -55,14 +55,9 @@ class WelcomePage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 2),
                     child: Image.asset(
                       'assets/images/paw.png',
-                      width: 36,
-                      height: 36,
-                      color: const Color(0xFFCC5B2A),
-                      colorBlendMode: BlendMode.srcIn,
-                      errorBuilder: (_, _, _) => const Text(
-                        '🐾',
-                        style: TextStyle(fontSize: 36),
-                      ),
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.contain,
                     ),
                   ),
                   const Text(
