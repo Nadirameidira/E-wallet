@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
+import '../services/transaction_data.dart';
+import '../models/transaction_model.dart';
 
 class TopUpReceiptPage extends StatelessWidget {
   final String methodName;
@@ -69,8 +71,17 @@ class TopUpReceiptPage extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Menutup semua layar Top Up dan kembali tepat ke Dashboard utama
-                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  // Simpan transaksi ke History sebelum kembali
+                    historyList.add(
+                      Transaction(
+                        title: 'Top Up $methodName',
+                        amount: amount,
+                        adminFee: adminFee,
+                        type: 'Top Up',
+                        date: formattedDate,
+                      ),
+                    );
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.greenBtn,

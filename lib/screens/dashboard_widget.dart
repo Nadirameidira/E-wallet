@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import 'topup_method.dart';
+import 'history_screen.dart';
 
 class DashboardWidget extends StatelessWidget {
   final String userName;
@@ -45,7 +46,7 @@ class DashboardWidget extends StatelessWidget {
                     child: Image.asset(
                       'assets/images/cat.png',
                       height: 50,
-                      errorBuilder: (_, __, ___) => const Icon(Icons.pets, color: AppColors.orange, size: 40),
+                      errorBuilder: (_, _, _) => const Icon(Icons.pets, color: AppColors.orange, size: 40),
                     ),
                   ),
                 ],
@@ -84,14 +85,21 @@ class DashboardWidget extends StatelessWidget {
                     icon: Icons.attach_money,
                     label: 'Balance',
                     color: const Color.fromARGB(255, 255, 224, 130),
-                    onTap: () {},
+                    onTap: () {
+
+                    },
                   ),
                   _buildMenuItem(
                     context: context,
                     icon: Icons.history,
                     label: 'History',
                     color: const Color.fromARGB(255, 220, 237, 193),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const HistoryScreen()),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     context: context,
