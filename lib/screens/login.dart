@@ -60,83 +60,108 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme:
-            const IconThemeData(color: Color(0xFFAB4B25)),
+        iconTheme: const IconThemeData(color: Color(0xFFAB4B25)),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                const SizedBox(height: 12),
-                const Text(
-                  'Halaman Login',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.orange,
+      body: SizedBox.expand(
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 180,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/grass.png'),
+                    fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Masukkan User ID dan Password kamu',
-                  style: TextStyle(color: Colors.black54, fontSize: 13),
-                ),
-                const SizedBox(height: 32),
-
-                CustomTextField(
-                  controller: _userId,
-                  label: 'User ID',
-                  validator: (v) =>
-                      (v == null || v.isEmpty) ? 'User ID wajib diisi' : null,
-                ),
-                CustomTextField(
-                  controller: _password,
-                  label: 'Password',
-                  isPassword: true,
-                  validator: (v) {
-                    if (v == null || v.isEmpty) return 'Password wajib diisi';
-                    if (v.length < 6) return 'Minimal 6 karakter';
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 8),
-                CustomButton(
-                  text: _loading ? 'Memuat...' : 'LOGIN',
-                  color: AppColors.greenBtn,
-                  horizontalPadding: 0,
-                  onTap: _loading ? null : _login,
-                ),
-
-                const SizedBox(height: 16),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Belum punya akun? ',
-                        style: TextStyle(color: Color(0xFFAB4B25))),
-                    TextButton(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const RegisterPage()),
-                      ),
-                      child: const Text(
-                        'Daftar Sekarang',
+              ),
+            ),
+            SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Halaman Login',
                         style: TextStyle(
-                          color: AppColors.orange,
+                          fontSize: 28,
                           fontWeight: FontWeight.bold,
+                          color: AppColors.orange,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Masukkan User ID dan Password kamu',
+                        style: TextStyle(
+                            color: AppColors.orange, fontSize: 13),
+                      ),
+                      const SizedBox(height: 32),
+
+                      CustomTextField(
+                        controller: _userId,
+                        label: 'User ID',
+                        validator: (v) => (v == null || v.isEmpty)
+                            ? 'User ID wajib diisi'
+                            : null,
+                      ),
+                      CustomTextField(
+                        controller: _password,
+                        label: 'Password',
+                        isPassword: true,
+                        validator: (v) {
+                          if (v == null || v.isEmpty) {
+                            return 'Password wajib diisi';
+                          }
+                          if (v.length < 6) return 'Minimal 6 karakter';
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 8),
+                      CustomButton(
+                        text: _loading ? 'Memuat...' : 'LOGIN',
+                        color: AppColors.greenBtn,
+                        horizontalPadding: 0,
+                        onTap: _loading ? null : _login,
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Belum punya akun? ',
+                            style: TextStyle(color: Color(0xFFAB4B25)),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const RegisterPage()),
+                            ),
+                            child: const Text(
+                              'Daftar Sekarang',
+                              style: TextStyle(
+                                color: AppColors.orange,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
