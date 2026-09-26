@@ -71,7 +71,7 @@ class TopUpReceiptPage extends StatelessWidget {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async{
                   // Simpan transaksi ke History sebelum kembali
                     historyList.add(
                       Transaction(

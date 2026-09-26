@@ -1,41 +1,14 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import '../services/auth_service.dart';
-import '../services/balance_service.dart';
-import '../widgets/balance_card.dart';
 import 'topup_method.dart';
 import 'history_screen.dart';
 import 'welcome.dart';
+import 'balance_screen.dart';
 
-class DashboardScreen extends StatefulsWidget {
+class DashboardScreen extends StatelessWidget {
   final String userName;
   const DashboardScreen({super.key, required this.userName});
-
-  @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
-}
-
-class _DashboardScreenState extends State<DashboardScreen> {
-  int _balance = 0;
-  String _noRekening = '_';
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    final balance = await BalanceService.getBalance();
-    final user = await AuthService.getCurrentUser();
-    if (!mounted) return;
-    setState(() {
-      _balance = balance;
-      _noRekening = user?.noRekening ?? '-';
-      _loading = false;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +46,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        'Hello, ${widget.userName}',
+                        'Hello, $userName',
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -98,16 +71,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24,),
-
-              // kartu saldo
-              _loading
-                ? const padding(
-                  padding: EdgeInsets.symmetric(vertical: 30),
-                  child: CircularProgressIndicator(
-                    color: AppColors.orange,
-                  ),
-                )
               const SizedBox(height: 30),
 
               // Menu Grid (6 Tombol)
@@ -124,13 +87,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     label: 'Top Up',
                     color: const Color.fromARGB(255, 255, 224, 130),
                     onTap: () async {
-                      Navigator.push(
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (_) => const TopUpMethodPage()),
                       );
-                      // Balik dari alur top up -> refresh biar saldo ke-update
-                      _loadData();
                     },
                   ),
                   _buildMenuItem(
@@ -145,7 +106,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     icon: Icons.attach_money,
                     label: 'Balance',
                     color: const Color.fromARGB(255, 255, 224, 130),
-                    onTap: () {},
+                    onTap: () async{
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const BalanceScreen()),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     context: context,
