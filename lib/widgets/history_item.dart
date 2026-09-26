@@ -21,7 +21,7 @@ class HistoryItem extends StatelessWidget {
       ),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: isIncome ? AppColors.greenBtn : AppColors.yellowBtn,
+          backgroundColor: isIncome ? AppColors.greenBtn : AppColors.bg,
           child: Icon(
             isIncome ? Icons.arrow_upward : Icons.swap_horiz,
             color: AppColors.orange,

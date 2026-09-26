@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme:
-            const IconThemeData(color: Color(0xFFAB4B25)),
+            const IconThemeData(color: Color.fromARGB(255, 171, 75, 37)),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 const SizedBox(height: 12),
                 const Text(
-                  'Halaman Login',
+                  'LOGIN',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text('Belum punya akun? ',
-                        style: TextStyle(color: Color(0xFFAB4B25))),
+                        style: TextStyle(color: Colors.black54)),
                     TextButton(
                       onPressed: () => Navigator.push(
                         context,

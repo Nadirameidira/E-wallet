@@ -28,7 +28,7 @@ class HistoryFilter extends StatelessWidget {
 
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: isActive ? AppColors.yellowBtn : Colors.grey[300],
+        backgroundColor: isActive ? AppColors.bg : Colors.grey[300],
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),

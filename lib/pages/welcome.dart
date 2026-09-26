@@ -33,48 +33,19 @@ class WelcomePage extends StatelessWidget {
             ),
           ),
 
-          Positioned(
+          const Positioned(
             top: 90,
             left: 0,
             right: 0,
             child: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    'C',
-                    style: TextStyle(
-                      fontSize: 44,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFCC5B2A),
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: Image.asset(
-                      'assets/images/paw.png',
-                      width: 36,
-                      height: 36,
-                      color: const Color(0xFFCC5B2A),
-                      colorBlendMode: BlendMode.srcIn,
-                      errorBuilder: (_, _, _) => const Text(
-                        '🐾',
-                        style: TextStyle(fontSize: 36),
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    '(sh)t',
-                    style: TextStyle(
-                      fontSize: 44,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFCC5B2A),
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                ],
+              child: Text(
+                'C🐾(sh)t',
+                style: TextStyle(
+                  fontSize: 44,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFCC5B2A),
+                  letterSpacing: 1.5,
+                ),
               ),
             ),
           ),

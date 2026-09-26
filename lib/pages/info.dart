@@ -9,12 +9,7 @@ class InfoPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: AppBar(
-        title: const Text('Tentang Aplikasi'),
-        titleTextStyle: const TextStyle(
-          color: AppColors.orange,
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-        ),
+        title: const Text('Info'),
         backgroundColor: AppColors.greenBtn,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.orange),
@@ -24,20 +19,22 @@ class InfoPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // === TENTANG APLIKASI ===
             _section(
               icon: Icons.info_outline,
               title: 'Tentang Aplikasi',
               content: const Text(
                 'Aplikasi ini adalah dompet digital sederhana yang dirancang '
-                'untuk mempermudah transaksi harian Anda. Dibangun dengan '
-                'konsep yang sederhana, aman, dan mudah digunakan.\n\n'
+                'untuk memudahkan transaksi harianmu. Dibuat dengan konsep '
+                'sederhana, aman, dan ramah pengguna.\n\n'
                 'Versi: 1.0.0',
-                style: TextStyle(height: 1.6, color: AppColors.orange),
+                style: TextStyle(height: 1.6, color: Colors.black87),
               ),
             ),
 
             const SizedBox(height: 16),
 
+            // === SYARAT & KETENTUAN ===
             _section(
               icon: Icons.gavel,
               title: 'Syarat & Ketentuan',
@@ -48,36 +45,36 @@ class InfoPage extends StatelessWidget {
                     nomor: '1',
                     judul: 'Pendaftaran Akun',
                     isi:
-                        'Pengguna wajib memberikan informasi yang akurat, meliputi '
-                        'nama lengkap, KTP, nomor telepon, dan alamat email yang valid.',
+                        'Pengguna wajib memberikan data yang benar, termasuk Nama '
+                        'Lengkap, NIK, No. HP, dan Email yang valid.',
                   ),
                   _TnCItem(
                     nomor: '2',
                     judul: 'Keamanan Akun',
                     isi:
-                        'Pengguna bertanggung jawab penuh untuk menjaga kerahasiaan '
-                        'User ID, Password, dan PIN. Jangan bagikan kepada siapa pun.',
+                        'Pengguna bertanggung jawab penuh atas kerahasiaan User ID, '
+                        'Password, dan PIN. Jangan bagikan kepada siapa pun.',
                   ),
                   _TnCItem(
                     nomor: '3',
                     judul: 'Penggunaan Layanan',
                     isi:
                         'Aplikasi hanya boleh digunakan untuk transaksi yang sah. '
-                        'Segala bentuk kecurangan akan dilaporkan ke pihak berwenang.',
+                        'Segala bentuk penipuan akan dilaporkan ke pihak berwenang.',
                   ),
                   _TnCItem(
                     nomor: '4',
                     judul: 'Privasi Data',
                     isi:
                         'Data pribadi pengguna dilindungi dan hanya digunakan untuk '
-                        'keperluan penyediaan layanan aplikasi.',
+                        'keperluan layanan aplikasi.',
                   ),
                   _TnCItem(
                     nomor: '5',
                     judul: 'Perubahan Ketentuan',
                     isi:
                         'Kami berhak mengubah Syarat & Ketentuan ini sewaktu-waktu. '
-                        'Perubahan akan diumumkan di dalam aplikasi.',
+                        'Perubahan akan diinformasikan melalui aplikasi.',
                   ),
                 ],
               ),
@@ -85,6 +82,7 @@ class InfoPage extends StatelessWidget {
 
             const SizedBox(height: 16),
 
+            // === KONTAK ===
             _section(
               icon: Icons.support_agent,
               title: 'Bantuan & Kontak',
@@ -94,12 +92,12 @@ class InfoPage extends StatelessWidget {
                   _ContactRow(
                     icon: Icons.email_outlined,
                     label: 'Email',
-                    value: 'support@ca(sh)t.id',
+                    value: 'support@aplikasi.id',
                   ),
                   _ContactRow(
                     icon: Icons.phone_outlined,
                     label: 'Call Center',
-                    value: '6688-6174',
+                    value: '1500-123',
                   ),
                 ],
               ),
@@ -109,8 +107,8 @@ class InfoPage extends StatelessWidget {
 
             const Center(
               child: Text(
-                '© 2026 Ca(sh)t',
-                style: TextStyle(fontSize: 11, color: AppColors.darkG),
+                '© 2025 Aplikasi Indonesia',
+                style: TextStyle(fontSize: 11, color: Colors.black45),
               ),
             ),
             const SizedBox(height: 16),
@@ -133,7 +131,7 @@ class InfoPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.orange.withAlpha(10),
+            color: Colors.black.withAlpha(10), // ✅ FIX — kompatibel semua versi
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -144,14 +142,14 @@ class InfoPage extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 20, color: AppColors.darkG),
+              Icon(icon, size: 20, color: AppColors.orange),
               const SizedBox(width: 8),
               Text(
                 title,
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.orange,
+                  color: Colors.black87,
                 ),
               ),
             ],
@@ -210,7 +208,7 @@ class _TnCItem extends StatelessWidget {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
-                    color: AppColors.orange,
+                    color: Colors.black87,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -219,7 +217,7 @@ class _TnCItem extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 12.5,
                     height: 1.5,
-                    color: AppColors.orange,
+                    color: Colors.black54,
                   ),
                 ),
               ],
@@ -248,16 +246,16 @@ class _ContactRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: AppColors.darkG),
+          Icon(icon, size: 18, color: AppColors.orange),
           const SizedBox(width: 12),
           Text(label,
-              style: const TextStyle(fontSize: 13, color: AppColors.orange)),
+              style: const TextStyle(fontSize: 13, color: Colors.black54)),
           const Spacer(),
           Text(value,
               style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.darkG)),
+                  color: Colors.black87)),
         ],
       ),
     );

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import '../services/transaction_data.dart';
 import '../models/transaction_model.dart';
-import '../services/balance_service.dart';
 
 class TopUpReceiptPage extends StatelessWidget {
   final String methodName;
@@ -82,9 +81,6 @@ class TopUpReceiptPage extends StatelessWidget {
                         date: formattedDate,
                       ),
                     );
-                  // Tambahin nominal top up kesaldo user
-                  await BalanceService.addBalance(amount);
-                  if (!context.mounted) return;
                   Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   style: ElevatedButton.styleFrom(
