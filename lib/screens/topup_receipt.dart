@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../utils/colors.dart';
 import '../services/transaction_data.dart';
 import '../models/transaction_model.dart';
 import '../services/balance_service.dart';
+import '../services/auth_service.dart'; 
+import 'dashboard_screen.dart';
 
 class TopUpReceiptPage extends StatelessWidget {
   final String methodName;
@@ -15,6 +18,16 @@ class TopUpReceiptPage extends StatelessWidget {
     required this.adminFee,
     required this.amount,
   });
+
+  // Helper bikin format ribuan pake titik (misal: 12000 -> 12.000)
+  String _formatRupiah(int number) {
+    final formatter = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    );
+    return formatter.format(number);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +56,7 @@ class TopUpReceiptPage extends StatelessWidget {
               ),
               const SizedBox(height: 30),
 
-              // Rincian Struk Pembayaran
+              // Rincian Struk / Detail Transaksi
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -57,10 +70,10 @@ class TopUpReceiptPage extends StatelessWidget {
                     _buildRow('Waktu', formattedTime),
                     _buildRow('Metode Pembayaran', methodName),
                     const Divider(height: 24, thickness: 1),
-                    _buildRow('Nominal Top Up', 'Rp $amount'),
-                    _buildRow('Biaya Admin', adminFee == 0 ? 'Bebas Admin' : 'Rp $adminFee'),
+                    _buildRow('Nominal Top Up', _formatRupiah(amount)),
+                    _buildRow('Biaya Admin', adminFee == 0 ? 'Bebas Admin' : _formatRupiah(adminFee)),
                     const Divider(height: 24, thickness: 1),
-                    _buildRow('Total Pembayaran', 'Rp $total', isBold: true),
+                    _buildRow('Total Pembayaran', _formatRupiah(total), isBold: true),
                   ],
                 ),
               ),
@@ -71,8 +84,8 @@ class TopUpReceiptPage extends StatelessWidget {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () async{
-                  // Simpan transaksi ke History sebelum kembali
+                  onPressed: () async {
+                    // Simpan ke Riwayat
                     historyList.add(
                       Transaction(
                         title: 'Top Up $methodName',
@@ -86,6 +99,21 @@ class TopUpReceiptPage extends StatelessWidget {
                   await BalanceService.addBalance(amount);
                   if (!context.mounted) return;
                   Navigator.of(context).popUntil((route) => route.isFirst);
+
+                    // Ambil user aktif
+                    final user = await AuthService.getCurrentUser();
+                    final userName = user?.namaLengkap ?? 'User';
+
+                    if (!context.mounted) return;
+
+                    // Kembali ke DashboardScreen
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => DashboardScreen(userName: userName),
+                      ),
+                      (route) => false,
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.greenBtn,
