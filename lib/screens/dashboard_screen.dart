@@ -4,6 +4,7 @@ import '../services/auth_service.dart';
 import 'topup_method.dart';
 import 'history_screen.dart';
 import 'welcome.dart';
+import 'balance_screen.dart';
 
 // Ini pake package path lengkap karena tujuannya untuk menghindari isu resolusi simbol pada kompiler Dartnya yahh
 import 'package:aplikasi_android_ewallet/screens/qr_scanner_screen.dart';
@@ -109,7 +110,12 @@ class DashboardScreen extends StatelessWidget {
                     icon: Icons.attach_money,
                     label: 'Balance',
                     color: const Color.fromARGB(255, 255, 224, 130),
-                    onTap: () {},
+                    onTap: () async{
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const BalanceScreen()),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     context: context,
