@@ -5,6 +5,7 @@ import '../models/user_model.dart';
 class AuthService {
   static const _keyUser = 'registered_user';
   static const _keyLogin = 'is_logged_in';
+  static const _keyPinTransaksi = 'pin_transaksi';
 
   static Future<bool> register(UserModel user) async {
     final prefs = await SharedPreferences.getInstance();
@@ -40,6 +41,27 @@ class AuthService {
       return true;
     }
     return false;
+  }
+
+  static Future<bool> verifyPinLogin(String pin) async {
+    return verifyPin(pin);
+  }
+
+  static Future<bool> verifyPinTransaksi(String pin) async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString(_keyPinTransaksi);
+    if (saved == null) return false;
+    return saved == pin;
+  }
+
+  static Future<void> setPinTransaksi(String pin) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_keyPinTransaksi, pin);
+  }
+
+  static Future<bool> hasPinTransaksi() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_keyPinTransaksi) != null;
   }
 
   static Future<UserModel?> getCurrentUser() async {
