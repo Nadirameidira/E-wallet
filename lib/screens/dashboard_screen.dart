@@ -219,7 +219,7 @@ class DashboardScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Yakin untuk keluar?\n jangan lupa untuk kembali melihat\n c🐾(sh)t !',
+                'Yakin untuk keluar?\n jangan lupa untuk kembali dan melihat\n c🐾(sh)t !',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.black54, fontSize: 13),
               ),
@@ -237,7 +237,7 @@ class DashboardScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: const Text(
-                        'Tetap disini',
+                        'Tetap disini.',
                         style: TextStyle(
                           color: AppColors.orange,
                           fontWeight: FontWeight.bold,
@@ -272,7 +272,7 @@ class DashboardScreen extends StatelessWidget {
                           Icon(Icons.pets, size: 16, color: AppColors.orange),
                           SizedBox(width: 6),
                           Text(
-                            'Keluar',
+                            'Keluar :[',
                             style: TextStyle(
                               color: AppColors.orange,
                               fontWeight: FontWeight.bold,
