@@ -2,7 +2,7 @@
 
 Project Ujian Tengah Semester membuat aplikasi mobile E-wallet.
 
-## Anggota Kelompok
+## Anggota Kelompok:
 * 535250066 Meisa Putri Nadira (Lead)
 * 535250061 Lulu Lydia Andrean  
 * 535250074 Stesa Aurel Titania 
