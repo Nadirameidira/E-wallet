@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../services/auth_service.dart';
 import '../utils/colors.dart';
 import 'topup_receipt.dart';
 
@@ -22,11 +23,11 @@ class TopUpPinScreen extends StatefulWidget {
 class _TopUpPinScreenState extends State<TopUpPinScreen> {
   final TextEditingController _pinController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  bool _loading = false;
 
   @override
   void initState() {
     super.initState();
-    // Biar pas halaman kebuka, keyboard laptop/HP langsung aktif tanpa klik2 lagi
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
     });
@@ -39,7 +40,6 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
     super.dispose();
   }
 
-  // Handle kalau user ngeklik angka dari keypad buatan di layar
   void _onKeypadClick(String val) {
     if (_pinController.text.length < 6) {
       setState(() {
@@ -48,7 +48,6 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
     }
   }
 
-  // Handle tombol hapus di keypad layar
   void _onBackspace() {
     if (_pinController.text.isNotEmpty) {
       setState(() {
@@ -58,7 +57,8 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
     }
   }
 
-  void _submit() {
+  // FUNGSI SUBMIT DENGAN VALIDASI PIN
+  Future<void> _submit() async {
     if (_pinController.text.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Masukkan 6 digit PIN lengkap')),
@@ -66,13 +66,48 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
       return;
     }
 
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(
-      builder: (_) => TopUpReceiptPage(
-        amount: widget.amount,
-        methodName: widget.methodName,
-        adminFee: widget.adminFee,
+    setState(() => _loading = true);
+
+    // 1. Ambil data user yang sedang login saat ini
+    final currentUser = await AuthService.getCurrentUser();
+
+    if (!mounted) return;
+    setState(() => _loading = false);
+
+    if (currentUser == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sesi pengguna tidak ditemukan. Silakan login kembali.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+
+    // 2. Cocokkan PIN yang diinput dengan PIN akun terdaftar
+    if (_pinController.text != currentUser.pin) {
+      // PIN Salah -> Kosongkan input & tampilkan pesan error
+      setState(() {
+        _pinController.clear();
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('PIN yang kamu masukkan salah! Silakan coba lagi.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+
+    // 3. Jika PIN Benar -> Lanjut ke Halaman Struk Top Up
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TopUpReceiptPage(
+          amount: widget.amount,
+          methodName: widget.methodName,
+          adminFee: widget.adminFee,
         ),
       ),
     );
@@ -87,6 +122,7 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        toolbarHeight: 40,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.orange),
           onPressed: () => Navigator.pop(context),
@@ -103,33 +139,28 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
                     const Text(
                       'Masukkan PIN Kamu',
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppColors.orange,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    
-                    // Teks penjelas biar user gak bingung ini PIN apa
+                    const SizedBox(height: 4),
                     const Text(
                       'Masukkan 6 digit PIN akun yang kamu daftarkan saat pertama kali registrasi.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 12,
                         color: Colors.black54,
                       ),
                     ),
                     const SizedBox(height: 32),
 
-                    // Trik Stack: TextField invisibel di balik 6 kotak PIN
-                    // Jadi user bisa ngetik dari keyboard laptop, tp kelihatannya ngisi kotak PIN
                     GestureDetector(
                       onTap: () {
                         FocusScope.of(context).requestFocus(_focusNode);
                       },
                       child: Stack(
                         children: [
-                          // TextField tersembunyi buat nangkep pencetan keyboard laptop
                           Opacity(
                             opacity: 0,
                             child: TextField(
@@ -141,19 +172,17 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
                               onChanged: (val) {
-                                setState(() {}); // Refresh tampilan kotak tiap ngetik
+                                setState(() {});
                               },
                             ),
                           ),
-                          
-                          // Tampilan visual 6 kotak PIN
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: List.generate(6, (index) {
                               bool isFilled = index < currentPin.length;
                               return Container(
-                                width: 45,
-                                height: 55,
+                                width: 38,
+                                height: 48,
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFFFE082),
                                   borderRadius: BorderRadius.circular(12),
@@ -167,8 +196,8 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
                                 child: Center(
                                   child: isFilled
                                       ? Container(
-                                          width: 12,
-                                          height: 12,
+                                          width: 10,
+                                          height: 10,
                                           decoration: const BoxDecoration(
                                             color: AppColors.orange,
                                             shape: BoxShape.circle,
@@ -187,7 +216,7 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
               ),
             ),
 
-            // Keypad ala kalkulator di layar (Opsional kalau mau diklik pake mouse)
+            // Keypad
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
               child: Column(
@@ -200,7 +229,7 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
                       _buildKeypadBtn('3'),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 6),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -209,7 +238,7 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
                       _buildKeypadBtn('6'),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 6),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -218,15 +247,15 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
                       _buildKeypadBtn('9'),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 6),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      const SizedBox(width: 60),
+                      const SizedBox(width: 48),
                       _buildKeypadBtn('0'),
                       SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: 48,
+                        height: 48,
                         child: IconButton(
                           onPressed: _onBackspace,
                           icon: const Icon(
@@ -241,14 +270,14 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
               ),
             ),
 
-            // Tombol submit transaksi
+            // Tombol Bayar
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: SizedBox(
                 width: double.infinity,
-                height: 52,
+                height: 48,
                 child: ElevatedButton(
-                  onPressed: _submit,
+                  onPressed: _loading ? null : _submit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.greenBtn,
                     shape: RoundedRectangleBorder(
@@ -256,10 +285,10 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    'Bayar Sekarang',
-                    style: TextStyle(
-                      fontSize: 16,
+                  child: Text(
+                    _loading ? 'Memverifikasi...' : 'Bayar Sekarang',
+                    style: const TextStyle(
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: AppColors.orange,
                     ),
@@ -273,17 +302,16 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
     );
   }
 
-  // Helper button keypad angka layar
   Widget _buildKeypadBtn(String val) {
     return SizedBox(
-      width: 60,
-      height: 60,
+      width: 48,
+      height: 48,
       child: TextButton(
         onPressed: () => _onKeypadClick(val),
         child: Text(
           val,
           style: const TextStyle(
-            fontSize: 22,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
             color: AppColors.orange,
           ),
