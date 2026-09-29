@@ -137,7 +137,7 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
                 child: Column(
                   children: [
                     const Text(
-                      'Masukkan PIN Kamu',
+                      'MEOW PIN',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -146,7 +146,7 @@ class _TopUpPinScreenState extends State<TopUpPinScreen> {
                     ),
                     const SizedBox(height: 4),
                     const Text(
-                      'Masukkan 6 digit PIN akun yang kamu daftarkan saat pertama kali registrasi.',
+                      'Masukkan 6 digit PIN angka yang kamu daftarkan saat pertama kali registrasi.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,
