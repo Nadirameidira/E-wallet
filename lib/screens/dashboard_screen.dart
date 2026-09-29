@@ -5,6 +5,7 @@ import 'topup_method.dart';
 import 'history_screen.dart';
 import 'welcome.dart';
 import 'balance_screen.dart';
+import 'transfer/transfer_menu_page.dart';
 
 // Ini pake package path lengkap karena tujuannya untuk menghindari isu resolusi simbol pada kompiler Dartnya yahh
 import 'package:aplikasi_android_ewallet/screens/qr_scanner_screen.dart';
@@ -103,7 +104,12 @@ class DashboardScreen extends StatelessWidget {
                     icon: Icons.swap_horiz,
                     label: 'Transfer',
                     color: const Color.fromARGB(255, 220, 237, 193),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const TransferMenuPage()),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     context: context,
