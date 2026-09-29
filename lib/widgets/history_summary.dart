@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import '../services/transaction_data.dart';
+import '../models/transaction_model.dart';
 import '../utils/colors.dart';
+import '../utils/formatter.dart';
 
 class HistorySummary extends StatelessWidget {
-  const HistorySummary({super.key});
+  final List<Transaction> transactions;
+
+  const HistorySummary({super.key, required this.transactions});
 
   @override
   Widget build(BuildContext context) {
     int totalIn = 0;
     int totalOut = 0;
 
-    for (var t in historyList) {
+    for (var t in transactions) {
       if (t.type == 'Top Up') {
         totalIn += t.total;
       } else {
@@ -36,7 +39,7 @@ class HistorySummary extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Rp $totalIn',
+                'Rp ${formatRupiah(totalIn)}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -54,7 +57,7 @@ class HistorySummary extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Rp $totalOut',
+                'Rp ${formatRupiah(totalOut)}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,

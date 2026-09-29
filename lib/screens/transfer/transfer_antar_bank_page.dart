@@ -198,7 +198,7 @@ class _TransferAntarBankPageState extends State<TransferAntarBankPage> {
     required ValueChanged<String?> onChanged,
   }) {
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       icon: const Icon(Icons.arrow_drop_down, color: AppColors.orange, size: 28),
       dropdownColor: AppColors.bg,
       decoration: InputDecoration(

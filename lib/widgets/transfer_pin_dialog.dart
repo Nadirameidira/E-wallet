@@ -4,7 +4,6 @@ import '../../services/auth_service.dart';
 import '../../services/balance_service.dart';
 import '../../services/transaction_data.dart';
 import '../../utils/colors.dart';
-import '../../utils/formatter.dart';
 import '../screens/transfer/transfer_receipt_page.dart'; // <--- Import Struk Transfer
 
 void showTransferPinDialog({
@@ -76,7 +75,11 @@ void showTransferPinDialog({
               date: formattedDate,
             );
 
-            historyList.add(newTransaction);
+            // Ambil user aktif untuk dapat userId
+            final currentUser = await AuthService.getCurrentUser();
+            if (currentUser != null) {
+              await TransactionService.addTransaction(currentUser.userId, newTransaction);
+            }
 
             if (!dialogContext.mounted) return;
             Navigator.pop(dialogContext); // Tutup Dialog PIN
@@ -134,7 +137,7 @@ void showTransferPinDialog({
                     decoration: InputDecoration(
                       hintText: '••••••••',
                       hintStyle: TextStyle(
-                        color: AppColors.orange.withOpacity(0.4),
+                        color: AppColors.orange.withValues(alpha: 0.4),
                         letterSpacing: 6,
                       ),
                       counterText: '',

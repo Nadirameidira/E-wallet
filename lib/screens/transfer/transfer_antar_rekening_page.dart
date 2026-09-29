@@ -187,7 +187,7 @@ class _TransferAntarRekeningPageState extends State<TransferAntarRekeningPage> {
     required ValueChanged<String?> onChanged,
   }) {
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       icon: const Icon(Icons.arrow_drop_down, color: AppColors.orange, size: 28),
       dropdownColor: AppColors.bg,
       decoration: InputDecoration(

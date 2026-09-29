@@ -85,8 +85,17 @@ class TopUpReceiptPage extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () async {
-                    // Simpan ke Riwayat
-                    historyList.add(
+                    // Mengambil userId dari user yang lagi login 
+                    final user = await AuthService.getCurrentUser();
+                    if (user == null) {
+                      if (!context.mounted) return;
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                      return;
+                    }
+
+                    // 1. Simpan transaksi ke riwayat milik user yang aktif
+                    await TransactionService.addTransaction(
+                      user.userId,
                       Transaction(
                         title: 'Top Up $methodName',
                         amount: amount,
@@ -95,22 +104,17 @@ class TopUpReceiptPage extends StatelessWidget {
                         date: formattedDate,
                       ),
                     );
-                  // Tambahin nominal top up kesaldo user
-                  await BalanceService.addBalance(amount);
-                  if (!context.mounted) return;
-                  Navigator.of(context).popUntil((route) => route.isFirst);
 
-                    // Ambil user aktif
-                    final user = await AuthService.getCurrentUser();
-                    final userName = user?.namaLengkap ?? 'User';
+                    // 2. Tambahin nominal top up ke saldo user
+                    await BalanceService.addBalance(amount);
 
                     if (!context.mounted) return;
 
-                    // Kembali ke DashboardScreen
+                    // 3. Balik ke DashboardScreen
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => DashboardScreen(userName: userName),
+                        builder: (_) => DashboardScreen(userName: user.namaLengkap),
                       ),
                       (route) => false,
                     );

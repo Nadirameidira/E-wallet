@@ -20,7 +20,7 @@ class HistoryEmpty extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Yuk mulai Top Up pertama kamu!',
+            'Yuk mulai transaksi pertama kaMeow! 🐾',
             style: TextStyle(color: Colors.grey[500], fontSize: 12),
           ),
         ],

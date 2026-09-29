@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/transaction_model.dart';
 import '../utils/colors.dart';
+import '../utils/formatter.dart';
 
 class HistoryItem extends StatelessWidget {
   final Transaction transaction;
@@ -30,17 +31,14 @@ class HistoryItem extends StatelessWidget {
         ),
         title: Text(
           transaction.title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         subtitle: Text(
           transaction.date,
           style: TextStyle(fontSize: 12, color: Colors.grey[600]),
         ),
         trailing: Text(
-          '${isIncome ? '+' : '-'}Rp ${transaction.total}',
+          '${isIncome ? '+' : '-'}Rp ${formatRupiah(transaction.total)}',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 13,
