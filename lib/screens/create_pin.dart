@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import 'dashboard_screen.dart';
-import 'topup_pin.dart'; // Ngarah ke variabel globalUserPin
 
 class CreatePinPage extends StatefulWidget {
   final String userName;
@@ -46,11 +45,7 @@ class _CreatePinPageState extends State<CreatePinPage> {
       setState(() {
         _errorMessage = "PIN terlalu mudah ditebak! Pilih kombinasi angka lain.";
       });
-      return;
-    }
-
-    // Simpan PIN ke memori global untuk dipake saat Top Up
-    globalUserPin = enteredPin;
+      return;    }
 
     // Lanjut masuk ke Dashboard
     Navigator.pushReplacement(

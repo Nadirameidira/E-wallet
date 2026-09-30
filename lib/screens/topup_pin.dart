@@ -1,222 +1,292 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../utils/colors.dart';
 import 'topup_receipt.dart';
 
-// Variabel PIN global dinamis
-String globalUserPin = "123456";
-
-class TopUpPinPage extends StatefulWidget {
+class TopUpPinScreen extends StatefulWidget {
+  final int amount;
   final String methodName;
   final int adminFee;
-  final int amount;
 
-  const TopUpPinPage({
+  const TopUpPinScreen({
     super.key,
+    required this.amount,
     required this.methodName,
     required this.adminFee,
-    required this.amount,
   });
 
   @override
-  State<TopUpPinPage> createState() => _TopUpPinPageState();
+  State<TopUpPinScreen> createState() => _TopUpPinScreenState();
 }
 
-class _TopUpPinPageState extends State<TopUpPinPage> {
-  // Controller dan FocusNode untuk 6 kotak PIN
-  final List<TextEditingController> _pinControllers =
-      List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+class _TopUpPinScreenState extends State<TopUpPinScreen> {
+  final TextEditingController _pinController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
-  String _errorMessage = "";
+  @override
+  void initState() {
+    super.initState();
+    // Biar pas halaman kebuka, keyboard laptop/HP langsung aktif tanpa klik2 lagi
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_focusNode);
+    });
+  }
 
   @override
   void dispose() {
-    for (var controller in _pinControllers) {
-      controller.dispose();
-    }
-    for (var node in _focusNodes) {
-      node.dispose();
-    }
+    _pinController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
-  void _verifyPin() {
-    // Gabungkan teks dari ke-6 kotak
-    String enteredPin = _pinControllers.map((c) => c.text).join();
-
-    if (enteredPin.length < 6) {
+  // Handle kalau user ngeklik angka dari keypad buatan di layar
+  void _onKeypadClick(String val) {
+    if (_pinController.text.length < 6) {
       setState(() {
-        _errorMessage = "Harap isi 6 digit PIN secara lengkap!";
+        _pinController.text += val;
       });
+    }
+  }
+
+  // Handle tombol hapus di keypad layar
+  void _onBackspace() {
+    if (_pinController.text.isNotEmpty) {
+      setState(() {
+        _pinController.text =
+            _pinController.text.substring(0, _pinController.text.length - 1);
+      });
+    }
+  }
+
+  void _submit() {
+    if (_pinController.text.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Masukkan 6 digit PIN lengkap')),
+      );
       return;
     }
 
-    // Cek ke PIN dinamis yang disimpan dari login
-    if (enteredPin == globalUserPin) {
-      // PIN Benar -> Masuk ke Struk
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => TopUpReceiptPage(
-            methodName: widget.methodName,
-            adminFee: widget.adminFee,
-            amount: widget.amount,
-          ),
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (_) => TopUpReceiptPage(
+        amount: widget.amount,
+        methodName: widget.methodName,
+        adminFee: widget.adminFee,
         ),
-      );
-    } else {
-      // PIN Salah -> Munculkan notifikasi & reset isi kotak
-      setState(() {
-        _errorMessage = "PIN yang kamu masukkan salah. Silakan coba lagi!";
-        for (var controller in _pinControllers) {
-          controller.clear();
-        }
-        // Kembalikan fokus ke kotak pertama
-        _focusNodes[0].requestFocus();
-      });
-    }
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    String currentPin = _pinController.text;
+
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 253, 245, 1),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Color.fromARGB(255, 171, 75, 37)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.orange),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
+      body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 20),
-            const Text(
-              'Masukkan PIN Kamu',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AppColors.orange,
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  children: [
+                    const Text(
+                      'Masukkan PIN Kamu',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.orange,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    
+                    // Teks penjelas biar user gak bingung ini PIN apa
+                    const Text(
+                      'Masukkan 6 digit PIN akun yang kamu daftarkan saat pertama kali registrasi.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Trik Stack: TextField invisibel di balik 6 kotak PIN
+                    // Jadi user bisa ngetik dari keyboard laptop, tp kelihatannya ngisi kotak PIN
+                    GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).requestFocus(_focusNode);
+                      },
+                      child: Stack(
+                        children: [
+                          // TextField tersembunyi buat nangkep pencetan keyboard laptop
+                          Opacity(
+                            opacity: 0,
+                            child: TextField(
+                              controller: _pinController,
+                              focusNode: _focusNode,
+                              keyboardType: TextInputType.number,
+                              maxLength: 6,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              onChanged: (val) {
+                                setState(() {}); // Refresh tampilan kotak tiap ngetik
+                              },
+                            ),
+                          ),
+                          
+                          // Tampilan visual 6 kotak PIN
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: List.generate(6, (index) {
+                              bool isFilled = index < currentPin.length;
+                              return Container(
+                                width: 45,
+                                height: 55,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFFE082),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: isFilled
+                                        ? AppColors.orange
+                                        : Colors.transparent,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: isFilled
+                                      ? Container(
+                                          width: 12,
+                                          height: 12,
+                                          decoration: const BoxDecoration(
+                                            color: AppColors.orange,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                              );
+                            }),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'Konfirmasi keamanan transaksi Top Up',
-              style: TextStyle(color: Colors.grey),
-            ),
-            const SizedBox(height: 30),
 
-            // 6 Box Input PIN Interaktif
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(6, (index) {
-                return SizedBox(
-                  width: 45,
-                  height: 55,
-                  child: TextField(
-                    controller: _pinControllers[index],
-                    focusNode: _focusNodes[index],
-                    autofocus: index == 0,
-                    obscureText: true,
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
-                    maxLength: 1,
-                    style: const TextStyle(
-                      fontSize: 20,
+            // Keypad ala kalkulator di layar (Opsional kalau mau diklik pake mouse)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildKeypadBtn('1'),
+                      _buildKeypadBtn('2'),
+                      _buildKeypadBtn('3'),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildKeypadBtn('4'),
+                      _buildKeypadBtn('5'),
+                      _buildKeypadBtn('6'),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildKeypadBtn('7'),
+                      _buildKeypadBtn('8'),
+                      _buildKeypadBtn('9'),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const SizedBox(width: 60),
+                      _buildKeypadBtn('0'),
+                      SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: IconButton(
+                          onPressed: _onBackspace,
+                          icon: const Icon(
+                            Icons.backspace,
+                            color: AppColors.orange,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            // Tombol submit transaksi
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: _submit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.greenBtn,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(26),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'Bayar Sekarang',
+                    style: TextStyle(
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: AppColors.orange,
                     ),
-                    decoration: InputDecoration(
-                      counterText: '',
-                      filled: true,
-                      fillColor: const Color.fromARGB(255, 255, 224, 130),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    onChanged: (val) {
-                      setState(() => _errorMessage = ""); // Hapus error pas mengetik
-
-                      if (val.isNotEmpty) {
-                        // Jika terisi, otomatis pindah ke kotak kanan
-                        if (index < 5) {
-                          _focusNodes[index + 1].requestFocus();
-                        } else {
-                          // Jika kotak ke-6 terisi, hilangkan keyboard
-                          _focusNodes[index].unfocus();
-                        }
-                      } else {
-                        // Jika dihapus (kosong), otomatis mundur ke kotak kiri
-                        if (index > 0) {
-                          _focusNodes[index - 1].requestFocus();
-                        }
-                      }
-                    },
-                  ),
-                );
-              }),
-            ),
-
-            // Tampilan Pesan Error jika PIN Salah
-            if (_errorMessage.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              Text(
-                _errorMessage,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                ),
-              ),
-            ],
-
-            const SizedBox(height: 16),
-
-            // Lupa PIN
-            TextButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('PIN transaksi kamu saat ini: $globalUserPin'),
-                  ),
-                );
-              },
-              child: const Text(
-                'Lupa PIN?',
-                style: TextStyle(
-                  color: AppColors.orange,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-
-            const Spacer(),
-
-            // Tombol Konfirmasi Pembayaran
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _verifyPin,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.greenBtn,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                ),
-                child: const Text(
-                  'Bayar Sekarang',
-                  style: TextStyle(
-                    color: AppColors.orange,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
                   ),
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Helper button keypad angka layar
+  Widget _buildKeypadBtn(String val) {
+    return SizedBox(
+      width: 60,
+      height: 60,
+      child: TextButton(
+        onPressed: () => _onKeypadClick(val),
+        child: Text(
+          val,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: AppColors.orange,
+          ),
         ),
       ),
     );

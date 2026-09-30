@@ -1,6 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import '../utils/colors.dart';
 import 'topup_pin.dart';
+
+class CurrencyInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.selection.baseOffset == 0) return newValue;
+
+    String digitsOnly = newValue.text.replaceAll(RegExp(r'\D'), '');
+    if (digitsOnly.isEmpty) {
+      return newValue.copyWith(
+        text: '',
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+    }
+
+    final formatter = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: '',
+      decimalDigits: 0,
+    );
+    String formatted = formatter.format(double.parse(digitsOnly)).trim();
+
+    return newValue.copyWith(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+}
 
 class TopUpAmountPage extends StatefulWidget {
   final String methodName;
@@ -17,178 +47,299 @@ class TopUpAmountPage extends StatefulWidget {
 }
 
 class _TopUpAmountPageState extends State<TopUpAmountPage> {
-  // Nampung angka yang lagi diketik sama user
-  String _amountStr = '0';
+  final _amountController = TextEditingController();
 
-  // Logika tombol kalkulator pas ditekan
-  void _onKeyPress(String val) {
+  String _formatNumberString(String digitsOnly) {
+    if (digitsOnly.isEmpty) return '';
+    final formatter = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: '',
+      decimalDigits: 0,
+    );
+    return formatter.format(double.parse(digitsOnly)).trim();
+  }
+
+  void _selectPreset(int amount) {
     setState(() {
-      if (val == 'CLEAR') {
-        // Hapus angka paling belakang satu per satu
-        if (_amountStr.length > 1) {
-          _amountStr = _amountStr.substring(0, _amountStr.length - 1);
-        } else {
-          _amountStr = '0';
-        }
-      } else if (val == '000') {
-        // Nambahin nol tiga biji sekaligus asal Layar bukan '0'
-        if (_amountStr != '0') {
-          _amountStr += '000';
-        }
-      } else {
-        // Kalo masih nol, ganti. Kalo udah ada angka, tempel di belakangnya
-        if (_amountStr == '0') {
-          _amountStr = val;
-        } else {
-          _amountStr += val;
-        }
-      }
+      _amountController.text = _formatNumberString(amount.toString());
     });
+  }
+
+  // Handle klik angka
+  void _onKeypadClick(String val) {
+    String currentDigits = _amountController.text.replaceAll('.', '');
+    if (currentDigits.length < 9) {
+      String newDigits = currentDigits + val;
+      setState(() {
+        _amountController.text = _formatNumberString(newDigits);
+      });
+    }
+  }
+
+  void _onBackspace() {
+    String currentDigits = _amountController.text.replaceAll('.', '');
+    if (currentDigits.isNotEmpty) {
+      String newDigits = currentDigits.substring(0, currentDigits.length - 1);
+      setState(() {
+        _amountController.text = _formatNumberString(newDigits);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    int amount = int.tryParse(_amountStr) ?? 0;
-
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 253, 245, 1),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Color.fromARGB(255, 171, 75, 37)),
-        title: Text(
-          widget.methodName,
-          style: const TextStyle(color: AppColors.orange, fontWeight: FontWeight.bold),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.orange),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Top Up',
+          style: TextStyle(
+            color: AppColors.orange,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            // Box layar tempat munculnya nominal yang diketik
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 24),
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 255, 224, 130),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                children: [
-                  const Text(
-                    'Nominal Top Up',
-                    style: TextStyle(color: AppColors.orange, fontSize: 14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          child: Column(
+            children: [
+              // Info Metode
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Metode: ${widget.methodName}',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black54,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Rp $_amountStr',
-                    style: const TextStyle(
-                      fontSize: 32,
+                ),
+              ),
+              const SizedBox(height: 4),
+
+              // Judul Nominal
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Nominal Top Up',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.orange,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Box Input Nominal
+              TextField(
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  CurrencyInputFormatter(),
+                ],
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.orange,
+                ),
+                decoration: InputDecoration(
+                  prefixText: 'Rp ',
+                  prefixStyle: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.orange,
+                  ),
+                  hintText: '0',
+                  hintStyle: const TextStyle(color: Colors.black26),
+                  filled: true,
+                  fillColor: const Color(0xFFFFF7DB),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Tombol Preset Nominal Cepat
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _presetButton(20000, 'Rp 20.000'),
+                  _presetButton(50000, 'Rp 50.000'),
+                  _presetButton(100000, 'Rp 100.000'),
+                ],
+              ),
+              const Spacer(),
+
+              // Keypad Angka
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildKeypadBtn('1'),
+                      _buildKeypadBtn('2'),
+                      _buildKeypadBtn('3'),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildKeypadBtn('4'),
+                      _buildKeypadBtn('5'),
+                      _buildKeypadBtn('6'),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildKeypadBtn('7'),
+                      _buildKeypadBtn('8'),
+                      _buildKeypadBtn('9'),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildKeypadBtn('000'), // <--- Tombol 000 biar mempermudah aja sih ini tujuannya pas si user masukin nomialnya
+                      _buildKeypadBtn('0'),
+                      SizedBox(
+                        width: 65,
+                        height: 45,
+                        child: IconButton(
+                          onPressed: _onBackspace,
+                          icon: const Icon(
+                            Icons.backspace,
+                            color: AppColors.orange,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const Spacer(),
+
+              // Tombol Lanjutkan
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () {
+                    String cleanDigits = _amountController.text.replaceAll('.', '');
+                    int amount = int.tryParse(cleanDigits) ?? 0;
+
+                    if (amount < 10000) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Minimal Top Up adalah Rp 10.000'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => TopUpPinScreen(
+                          amount: amount,
+                          methodName: widget.methodName,
+                          adminFee: widget.adminFee,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.greenBtn,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'Lanjutkan',
+                    style: TextStyle(
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: AppColors.orange,
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-            
-            const Spacer(),
-
-            // Section keypad numpad kalkulator bawah
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 238, 231, 208),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-              ),
-              child: Column(
-                children: [
-                  _buildKeypadRow(['1', '2', '3']),
-                  _buildKeypadRow(['4', '5', '6']),
-                  _buildKeypadRow(['7', '8', '9']),
-                  _buildKeypadRow(['000', '0', 'CLEAR']),
-                  const SizedBox(height: 16),
-                  
-                  // Tombol lanjut, baru aktif kalo nominal minimal Rp10.000
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: amount < 10000
-                          ? null
-                          : () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => TopUpPinPage(
-                                    methodName: widget.methodName,
-                                    adminFee: widget.adminFee,
-                                    amount: amount,
-                                  ),
-                                ),
-                              );
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.greenBtn,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                      child: const Text(
-                        'Konfirmasi Nominal',
-                        style: TextStyle(
-                          color: AppColors.orange,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+              const SizedBox(height: 6),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  // Widget bantuan buat bikin 1 baris tombol keypad
-  Widget _buildKeypadRow(List<String> keys) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: keys.map((key) {
-        return Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(6),
-            child: InkWell(
-              onTap: () => _onKeyPress(key),
-              borderRadius: BorderRadius.circular(15),
-              child: Container(
-                height: 55,
-                decoration: BoxDecoration(
-                  color: const Color.fromRGBO(255, 253, 245, 1),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Center(
-                  child: key == 'CLEAR'
-                      ? const Icon(Icons.backspace_outlined, color: AppColors.orange)
-                      : Text(
-                          key,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.orange,
-                          ),
-                        ),
-                ),
-              ),
+  Widget _presetButton(int amount, String label) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 3),
+        child: OutlinedButton(
+          onPressed: () => _selectPreset(amount),
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: AppColors.orange),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 8),
+          ),
+          child: Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.orange,
+              fontWeight: FontWeight.bold,
+              fontSize: 11,
             ),
           ),
-        );
-      }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildKeypadBtn(String val) {
+    return SizedBox(
+      width: 65,
+      height: 45,
+      child: TextButton(
+        onPressed: () => _onKeypadClick(val),
+        child: Text(
+          val,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppColors.orange,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -6,7 +6,11 @@ import 'history_screen.dart';
 import 'welcome.dart';
 import 'balance_screen.dart';
 
+// Ini pake package path lengkap karena tujuannya untuk menghindari isu resolusi simbol pada kompiler Dartnya yahh
+import 'package:aplikasi_android_ewallet/screens/qr_scanner_screen.dart';
+
 class DashboardScreen extends StatelessWidget {
+  // Menampung nama pengguna yang berhasil login untuk kebutuhan personalisasi antarmuka (UI)
   final String userName;
   const DashboardScreen({super.key, required this.userName});
 
@@ -17,7 +21,7 @@ class DashboardScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false, // Menghilangkan tombol back bawaan agar pengguna tidak bisa kembali ke halaman login (padahal sudah login)
         actions: [
           IconButton(
             icon: const Icon(Icons.pets, color: AppColors.orange),
@@ -32,14 +36,14 @@ class DashboardScreen extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              // Header Banner Kucing & Name
+              
+              // Widget Banner Header: Menggunakan Stack untuk efek overlapping asset gambar kucing di atas Container banner
               Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 24, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 255, 224, 130),
                       borderRadius: BorderRadius.circular(20),
@@ -73,10 +77,10 @@ class DashboardScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
 
-              // Menu Grid (6 Tombol)
+              // Layout Menu Utama: Menggunakan GridView 3 kolom untuk navigasi fitur e-wallet
               GridView.count(
                 shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(), // Mencegah bentrok (konflik) scroll antara GridView dan SingleChildScrollView
                 crossAxisCount: 3,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
@@ -86,11 +90,11 @@ class DashboardScreen extends StatelessWidget {
                     icon: Icons.arrow_upward,
                     label: 'Top Up',
                     color: const Color.fromARGB(255, 255, 224, 130),
-                    onTap: () async {
-                      await Navigator.push(
+                    onTap: () {
+                      // Navigasi menuju halaman pemilihan metode Top Up
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (_) => const TopUpMethodPage()),
+                        MaterialPageRoute(builder: (_) => const TopUpMethodPage()),
                       );
                     },
                   ),
@@ -119,10 +123,10 @@ class DashboardScreen extends StatelessWidget {
                     label: 'History',
                     color: const Color.fromARGB(255, 220, 237, 193),
                     onTap: () {
+                      // Navigasi melihat riwayat transaksi pengguna
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (_) => const HistoryScreen()),
+                        MaterialPageRoute(builder: (_) => const HistoryScreen()),
                       );
                     },
                   ),
@@ -144,18 +148,27 @@ class DashboardScreen extends StatelessWidget {
               ),
               const SizedBox(height: 40),
 
-              // Bottom Quick Action / Barcode Box
-              Container(
-                width: double.infinity,
-                height: 70,
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 220, 237, 193),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Icon(
-                  Icons.qr_code_scanner,
-                  size: 40,
-                  color: AppColors.orange,
+              // Fitur Quick Scan QRIS: Menggunakan GestureDetector agar event sentuhan terdeteksi lebih peka tanpa bentrok dengan scroll
+              GestureDetector(
+                onTap: () {
+                  // Membuka halaman pemindaian QRIS/Barcode secara interaktif
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const QRScannerScreen()),
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 220, 237, 193),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Icon(
+                    Icons.qr_code_scanner,
+                    size: 40,
+                    color: AppColors.orange,
+                  ),
                 ),
               ),
             ],
@@ -165,6 +178,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
+  // Pop-up Konfirmasi Logout: Menggunakan Dialog kustom beranimasi paw kucing tujuannya disini biar menjaga konsistensi tema aplikasi kelompok
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -211,8 +225,7 @@ class DashboardScreen extends StatelessWidget {
                     child: TextButton(
                       onPressed: () => Navigator.pop(dialogContext),
                       style: TextButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 220, 237, 193),
+                        backgroundColor: const Color.fromARGB(255, 220, 237, 193),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -232,18 +245,17 @@ class DashboardScreen extends StatelessWidget {
                     child: TextButton(
                       onPressed: () async {
                         Navigator.pop(dialogContext);
+                        // Menghapus data sesi terautentikasi dan mengembalikan rute navigasi ke Welcome Page
                         await AuthService.logout();
                         if (!context.mounted) return;
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(
-                              builder: (_) => const WelcomePage()),
+                          MaterialPageRoute(builder: (_) => const WelcomePage()),
                           (route) => false,
                         );
                       },
                       style: TextButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 255, 224, 130),
+                        backgroundColor: const Color.fromARGB(255, 255, 224, 130),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -252,8 +264,7 @@ class DashboardScreen extends StatelessWidget {
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.pets,
-                              size: 16, color: AppColors.orange),
+                          Icon(Icons.pets, size: 16, color: AppColors.orange),
                           SizedBox(width: 6),
                           Text(
                             'Logout',
@@ -275,6 +286,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
+  // Ini Helper Widget Animasi Icon Jejak Kucing saat Modal Logout muncul
   Widget _boingPaw({
     required int delayMs,
     required double size,
@@ -301,7 +313,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // Helper widget buat ngebikin item menu grid
+  // Nah kalo ini Helper Reusable Widget untuk membuat item tombol-tombol pada Grid Menu secara efisien
   Widget _buildMenuItem({
     required BuildContext context,
     required IconData icon,
