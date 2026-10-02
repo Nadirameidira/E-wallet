@@ -3,8 +3,11 @@ import '../services/auth_service.dart';
 import '../utils/colors.dart';
 import 'dashboard_screen.dart';
 
+enum PinMode { login, transaksi }
+
 class PinPage extends StatefulWidget {
-  const PinPage({super.key});
+  final PinMode mode;
+  const PinPage({super.key, this.mode = PinMode.login});
 
   @override
   State<PinPage> createState() => _PinPageState();
@@ -32,30 +35,38 @@ class _PinPageState extends State<PinPage> {
   }
 
   Future<void> _verify() async {
-    final ok = await AuthService.verifyPin(_pin);
+    final ok = widget.mode == PinMode.login
+        ? await AuthService.verifyPinLogin(_pin)
+        : await AuthService.verifyPinTransaksi(_pin);
+
     if (!mounted) return;
 
     if (ok) {
-      
-      final user = await AuthService.getCurrentUser();
-      if (!mounted) return;
+      if (widget.mode == PinMode.login) {
+        final user = await AuthService.getCurrentUser();
+        if (!mounted) return;
 
-      final userName = user?.namaLengkap ?? 'User';
+        final userName = user?.namaLengkap ?? 'User';
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => DashboardScreen(userName: userName),
-        ),
-      );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => DashboardScreen(userName: userName),
+          ),
+        );
+      } else {
+        Navigator.pop(context, true);
+      }
     } else {
       setState(() {
         _error = true;
         _pin = '';
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('PIN salah, coba lagi'),
+        SnackBar(
+          content: Text(widget.mode == PinMode.login
+              ? 'PIN salah, coba lagi'
+              : 'PIN transaksi salah, coba lagi'),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -78,9 +89,11 @@ class _PinPageState extends State<PinPage> {
           child: Column(
             children: [
               const SizedBox(height: 12),
-              const Text(
-                'Masukkan PIN',
-                style: TextStyle(
+              Text(
+                widget.mode == PinMode.login
+                    ? 'Masukkan PIN'
+                    : 'Masukkan PIN Transaksi',
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: AppColors.orange,
@@ -88,7 +101,9 @@ class _PinPageState extends State<PinPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                _error ? 'PIN salah, coba lagi' : 'Masukkan 6 digit PIN kamu',
+                _error
+                    ? 'PIN salah, coba lagi'
+                    : 'Masukkan 6 digit PIN kamu',
                 style: TextStyle(
                   color: _error ? Colors.red : Colors.black54,
                 ),

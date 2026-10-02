@@ -97,6 +97,8 @@ class TopUpReceiptPage extends StatelessWidget {
                     );
                   // Tambahin nominal top up kesaldo user
                   await BalanceService.addBalance(amount);
+                  if (!context.mounted) return;
+                  Navigator.of(context).popUntil((route) => route.isFirst);
 
                     // Ambil user aktif
                     final user = await AuthService.getCurrentUser();
