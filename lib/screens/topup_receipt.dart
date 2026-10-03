@@ -139,24 +139,30 @@ class TopUpReceiptPage extends StatelessWidget {
   }
 
   Widget _buildRow(String label, String value, {bool isBold = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label, 
-            style: TextStyle(
-              color: isBold ? AppColors.orange : Colors.grey[700], 
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-            ),
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Label di sebelah kiri tetap fleksibel
+        Text(
+          label, 
+          style: TextStyle(
+            color: isBold ? AppColors.orange : Colors.grey[700], 
+            fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
           ),
-          Text(
+        ),
+        const SizedBox(width: 8), // Jarak aman minimal antara label dan nilai
+        // Jadi nilai di sebelah kanan dibungkus Flexible + TextAlign.right
+        Flexible(
+          child: Text(
             value,
+            textAlign: TextAlign.right, // Teks rata kanan
             style: TextStyle(
               fontWeight: isBold ? FontWeight.bold : FontWeight.w600,
               color: isBold ? AppColors.orange : Colors.black,
               fontSize: isBold ? 16 : 14,
+              ),
             ),
           ),
         ],
