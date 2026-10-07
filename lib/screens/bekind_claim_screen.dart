@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import '../services/bekind_service.dart';
+import '../services/balance_service.dart';
+import '../services/transaction_data.dart';
+import '../models/transaction_model.dart';
 import '../widgets/bekind_input_field.dart';
 import '../widgets/bekind_primary_button.dart';
 
@@ -35,6 +38,20 @@ class _BeKindClaimScreenState extends State<BeKindClaimScreen> {
     }
 
     final amount = bekind.totalAmount ~/ bekind.totalSlots;
+
+
+    await BalanceService.addBalance(amount);
+
+    final now = DateTime.now();
+    historyList.add(Transaction(
+      title: 'BE KIND - Klaim (${bekind.code})',
+      amount: amount,
+      adminFee: 0,
+      type: 'Top Up',
+      date: '${now.day}/${now.month}/${now.year}',
+    ));
+
+    if (!mounted) return;
 
     showDialog(
       context: context,
