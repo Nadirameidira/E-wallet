@@ -4,7 +4,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../utils/colors.dart';
 import '../services/auth_service.dart';
+import '../models/transaction_model.dart';
+import '../services/transaction_data.dart';
+import '../services/balance_service.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
 
 class QRScannerScreen extends StatefulWidget {
   const QRScannerScreen({super.key});
@@ -180,8 +184,42 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
             child: const Text('Batal', style: TextStyle(color: Colors.white54)),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
+
+              final user = await AuthService.getCurrentUser();
+              if (user == null) return;
+
+              const int nominal = 50000;
+
+              final saldo = await BalanceService.getBalance();
+              if (saldo < nominal) {
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Saldo kamu tidak mencukupi!'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                return;
+              }
+
+              await BalanceService.deductBalance(nominal);
+
+              final now = DateTime.now();
+              final formattedDate = "${now.day}/${now.month}/${now.year}";
+              await TransactionService.addTransaction(
+                user.userId,
+                Transaction(
+                  title: 'Bayar QRIS - PT PAW-PAY INDONESIA',
+                  amount: nominal,
+                  adminFee: 0,
+                  type: 'Payment',
+                  date: formattedDate,
+                ),
+              );
+
+              if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Pembayaran QRIS Berhasil!'),
@@ -381,7 +419,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
               ),
               const SizedBox(height: 16),
 
-              // --- Widget QR Kode bisa ke scan  ---
+              // Widget QR Kode bisa ke scan
               QrImageView(
                 data: 'PAWPAY-QRIS-$_currentUserName', // Payload data unik user
                 version: QrVersions.auto,

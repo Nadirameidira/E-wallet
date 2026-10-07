@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/transaction_model.dart';
 import '../utils/colors.dart';
 import '../services/auth_service.dart';
 import 'topup_method.dart';
@@ -22,6 +23,8 @@ class _BalanceScreenState extends State<BalanceScreen> {
   int _balance = 0;
   String _noRekening = '-';
   String _namaLengkap = '-';
+  // Menampung riwayat transaksi user yang lagi login, buat ditampilin preview
+  List<Transaction> _allTransactions = [];
   bool _loading = true;
 
   @override
@@ -42,18 +45,27 @@ class _BalanceScreenState extends State<BalanceScreen> {
   Future<void> _loadData() async {
     final balance = await BalanceService.getBalance();
     final user = await AuthService.getCurrentUser();
+
+    // Ambil riwayat transaksi khusus milik user yang aktif
+    List<Transaction> all = [];
+    if (user != null) {
+      all = await TransactionService.getHistory(user.userId);
+    }
+
     if (!mounted) return;
     setState(() {
       _balance = balance;
       _noRekening = user?.noRekening ?? '-';
       _namaLengkap = user?.namaLengkap ?? '-';
+      _allTransactions = all;
       _loading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final recentTransactions = historyList.reversed.take(5).toList();
+    // Ambil 5 transaksi terbaru (karena list udah urut terbaru di depan)
+    final recentTransactions = _allTransactions.take(5).toList();
 
     return Scaffold(
       backgroundColor: AppColors.bg,
@@ -182,7 +194,8 @@ class _BalanceScreenState extends State<BalanceScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const HistorySummary(),
+                    // Kirim daftar transaksi user ke widget summary
+                    HistorySummary(transactions: _allTransactions),
                     const SizedBox(height: 24),
 
                     // Transaksi Terakhir + tombol lihat semua

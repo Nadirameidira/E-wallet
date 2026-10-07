@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/transaction_model.dart';
 import '../utils/colors.dart';
+import '../utils/formatter.dart';
 
 class HistoryItem extends StatelessWidget {
   final Transaction transaction;
@@ -9,7 +10,7 @@ class HistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isIncome = transaction.type == 'Top Up';
+    bool isIncome = transaction.type == 'Top Up' || transaction.title.contains('Klaim');
 
     return Card(
       color: const Color.fromARGB(255, 255, 248, 225),
@@ -30,17 +31,14 @@ class HistoryItem extends StatelessWidget {
         ),
         title: Text(
           transaction.title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         subtitle: Text(
           transaction.date,
           style: TextStyle(fontSize: 12, color: Colors.grey[600]),
         ),
         trailing: Text(
-          '${isIncome ? '+' : '-'}Rp ${transaction.total}',
+          '${isIncome ? '+' : '-'}Rp ${formatRupiah(transaction.total)}',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 13,

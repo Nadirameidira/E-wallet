@@ -74,7 +74,35 @@ class TopUpReceiptPage extends StatelessWidget {
                 color: const Color(0xFFE8DCC4).withValues(alpha: 0.5),
               ),
             ),
+              // Tombol Kembali ke Dashboard Utama
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // Mengambil userId dari user yang lagi login 
+                    final user = await AuthService.getCurrentUser();
+                    if (user == null) {
+                      if (!context.mounted) return;
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                      return;
+                    }
 
+                    // Menyimpan transaksi ke riwayat milik user yang aktif
+                    await TransactionService.addTransaction(
+                      user.userId,
+                      Transaction(
+                        title: 'Top Up $methodName',
+                        amount: amount,
+                        adminFee: adminFee,
+                        type: 'Top Up',
+                        date: formattedDate,
+                      ),
+                    );
+
+                    // Menambah nominal top up ke saldo user
+                    await BalanceService.addBalance(amount);
+                    
             // 2. KONTEN RESI UTAMA
             Padding(
               padding: const EdgeInsets.all(24),
@@ -144,8 +172,15 @@ class TopUpReceiptPage extends StatelessWidget {
                         final user = await AuthService.getCurrentUser();
                         final userName = user?.namaLengkap ?? 'User';
 
+
                         if (!context.mounted) return;
 
+                    // Kembali ke DashboardScreen
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => DashboardScreen(userName: user.namaLengkap),
+                        
                         // Navigasi kembali ke DashboardScreen dan hapus riwayat tumpukan halaman
                         Navigator.pushAndRemoveUntil(
                           context,

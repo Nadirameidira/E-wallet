@@ -14,4 +14,20 @@ class Transaction {
   });
 
   int get total => amount + adminFee;
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'amount': amount,
+        'adminFee': adminFee,
+        'type': type,
+        'date': date,
+      };
+
+  factory Transaction.fromJson(Map<String, dynamic> json) => Transaction(
+        title: json['title'] as String,
+        amount: json['amount'] as int,
+        adminFee: json['adminFee'] as int,
+        type: json['type'] as String,
+        date: json['date'] as String,
+      );
 }

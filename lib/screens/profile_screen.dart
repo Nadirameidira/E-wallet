@@ -111,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Atau Pilih Avatar Kucing:',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black.withOpacity(0.7)),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black.withValues(alpha: 0.7)),
                 ),
               ),
               const SizedBox(height: 12),
@@ -217,7 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(fontSize: 11, color: Colors.black.withOpacity(0.54))),
+          Text(label, style: TextStyle(fontSize: 11, color: Colors.black.withValues(alpha: 0.54))),
           Text(
             value,
             style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.orange),
@@ -350,7 +350,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 16),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
-                    activeColor: AppColors.orange,
+                    activeThumbColor: AppColors.orange,
                     title: const Text('Notifikasi Transaksi', style: TextStyle(fontWeight: FontWeight.bold)),
                     subtitle: const Text('Terima pemberitahuan saat ada saldo masuk atau keluar', style: TextStyle(fontSize: 12)),
                     value: _isNotificationEnabled,

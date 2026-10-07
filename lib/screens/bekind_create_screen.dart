@@ -66,13 +66,19 @@ class _BeKindCreateScreenState extends State<BeKindCreateScreen> {
     );
 
     final now = DateTime.now();
-    historyList.add(Transaction(
-      title: 'BE KIND - Buat (${bekind.code})',
-      amount: amount,
-      adminFee: 0,
-      type: 'Transfer',
-      date: '${now.day}/${now.month}/${now.year}',
-    ));
+    final currentUser = await AuthService.getCurrentUser();
+    if (currentUser != null) {
+      await TransactionService.addTransaction(
+        currentUser.userId,
+        Transaction(
+          title: 'BE KIND - Buat (${bekind.code})',
+          amount: amount,
+          adminFee: 0,
+          type: 'BE KIND',
+          date: '${now.day}/${now.month}/${now.year}',
+        ),
+      );
+    }
 
     if (!mounted) return;
     setState(() {

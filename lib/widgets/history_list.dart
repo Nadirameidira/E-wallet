@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import '../models/transaction_model.dart';
-import '../services/transaction_data.dart';
 import 'history_empty.dart';
 import 'history_item.dart';
 
 class HistoryList extends StatelessWidget {
+  final List<Transaction> transactions;
   final String filter;
 
-  const HistoryList({super.key, required this.filter});
+  const HistoryList({
+    super.key,
+    required this.transactions,
+    required this.filter,
+  });
 
   @override
   Widget build(BuildContext context) {
-    List<Transaction> filteredList = historyList;
+    List<Transaction> filteredList = transactions;
 
     if (filter != 'All') {
-      filteredList = historyList.where((t) => t.type == filter).toList();
+      filteredList = transactions.where((t) => t.type == filter).toList();
     }
 
     if (filteredList.isEmpty) {
