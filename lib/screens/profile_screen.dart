@@ -400,14 +400,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.email_outlined, color: AppColors.orange),
               title: const Text('Email CS', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-              subtitle: const Text('support@catpay.id', style: TextStyle(fontSize: 12)),
+              subtitle: const Text('support@ca(sh)t.id', style: TextStyle(fontSize: 12)),
               onTap: () {},
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.phone_in_talk_outlined, color: AppColors.orange),
               title: const Text('Call Center', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-              subtitle: const Text('0800-123-CATPAY (24 Jam)', style: TextStyle(fontSize: 12)),
+              subtitle: const Text('6688-6174 (Jam Operasiional 08.00 - 17.00)', style: TextStyle(fontSize: 12)),
               onTap: () {},
             ),
           ],
@@ -592,7 +592,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 24),
 
-          // LIST MENU PILIHAN
+          // list menu
           _buildMenuButton(
             icon: Icons.person,
             label: 'Data diri',
@@ -619,7 +619,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 12),
 
-          // KELUAR AKUN
+          // logout
           _buildMenuButton(
             icon: Icons.logout_rounded,
             label: 'Keluar Akun',
