@@ -58,7 +58,7 @@ class _TransferAntarRekeningPageState extends State<TransferAntarRekeningPage> {
       return;
     }
 
-    // Tampilkan Dialog PIN
+    // menampilkan Dialog PIN
     showTransferPinDialog(
       context: context,
       title: 'Transfer ke $rekening',

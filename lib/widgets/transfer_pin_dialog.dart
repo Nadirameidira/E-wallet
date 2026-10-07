@@ -4,7 +4,6 @@ import '../../services/auth_service.dart';
 import '../../services/balance_service.dart';
 import '../../services/transaction_data.dart';
 import '../../utils/colors.dart';
-import '../../utils/formatter.dart';
 import '../screens/transfer/transfer_receipt_page.dart'; 
 
 void showTransferPinDialog({
