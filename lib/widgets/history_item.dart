@@ -10,7 +10,7 @@ class HistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isIncome = transaction.type == 'Top Up';
+    bool isIncome = transaction.type == 'Top Up' || transaction.title.contains('Klaim');
 
     return Card(
       color: const Color.fromARGB(255, 255, 248, 225),

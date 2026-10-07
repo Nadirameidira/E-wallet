@@ -13,13 +13,21 @@ class HistoryFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildButton('All'),
-        _buildButton('Top Up'),
-        _buildButton('Transfer'),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _buildButton('All'),
+          const SizedBox(width: 8),
+          _buildButton('Payment'),
+          const SizedBox(width: 8),
+          _buildButton('Top Up'),
+          const SizedBox(width: 8),
+          _buildButton('Transfer'),
+          const SizedBox(width: 8),
+          _buildButton('BE KIND'),
+        ],
+      ),
     );
   }
 

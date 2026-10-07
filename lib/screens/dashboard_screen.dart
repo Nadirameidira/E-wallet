@@ -5,7 +5,9 @@ import 'topup_method.dart';
 import 'history_screen.dart';
 import 'welcome.dart';
 import 'balance_screen.dart';
+import 'bekind_screen.dart';
 import 'transfer/transfer_menu_page.dart';
+import 'profile_screen.dart'; 
 
 // Ini pake package path lengkap karena tujuannya untuk menghindari isu resolusi simbol pada kompiler Dartnya yahh
 import 'package:aplikasi_android_ewallet/screens/qr_scanner_screen.dart';
@@ -141,14 +143,24 @@ class DashboardScreen extends StatelessWidget {
                     icon: Icons.favorite,
                     label: 'BE KIND',
                     color: const Color.fromARGB(255, 255, 224, 130),
-                    onTap: () {},
+                    onTap: () {
+                    Navigator.push(
+                      context,
+                    MaterialPageRoute(builder: (_) => const BeKindScreen()),
+                    );
+                   },
                   ),
                   _buildMenuItem(
                     context: context,
                     icon: Icons.person,
                     label: 'Pawrofile',
                     color: const Color.fromARGB(255, 220, 237, 193),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -184,7 +196,6 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // Pop-up Konfirmasi Logout: Menggunakan Dialog kustom beranimasi paw kucing tujuannya disini biar menjaga konsistensi tema aplikasi kelompok
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -211,7 +222,7 @@ class DashboardScreen extends StatelessWidget {
               ),
               const SizedBox(height: 18),
               const Text(
-                'Want to leave, Meow? 🐾',
+                'Kamu mau pergi, Meow? 🐾',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -220,7 +231,7 @@ class DashboardScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                'You sure to logout?\ndont forget tocheck ur ca(sh)t anytime sooner !',
+                'Yakin untuk keluar?\n jangan lupa untuk kembali dan melihat\n c🐾(sh)t !',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.black54, fontSize: 13),
               ),
@@ -238,7 +249,7 @@ class DashboardScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: const Text(
-                        'Stay here',
+                        'Tetap disini.',
                         style: TextStyle(
                           color: AppColors.orange,
                           fontWeight: FontWeight.bold,
@@ -273,7 +284,7 @@ class DashboardScreen extends StatelessWidget {
                           Icon(Icons.pets, size: 16, color: AppColors.orange),
                           SizedBox(width: 6),
                           Text(
-                            'Logout',
+                            'Keluar :[',
                             style: TextStyle(
                               color: AppColors.orange,
                               fontWeight: FontWeight.bold,
@@ -292,7 +303,6 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // Ini Helper Widget Animasi Icon Jejak Kucing saat Modal Logout muncul
   Widget _boingPaw({
     required int delayMs,
     required double size,

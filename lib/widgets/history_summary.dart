@@ -14,7 +14,7 @@ class HistorySummary extends StatelessWidget {
     int totalOut = 0;
 
     for (var t in transactions) {
-      if (t.type == 'Top Up') {
+      if (t.type == 'Top Up' || t.title.contains('Klaim')) {
         totalIn += t.total;
       } else {
         totalOut += t.total;

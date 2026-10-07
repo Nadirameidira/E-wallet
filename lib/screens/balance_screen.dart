@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/transaction_model.dart';
 import '../utils/colors.dart';
 import '../services/auth_service.dart';
+import 'topup_method.dart';
+import 'transfer/transfer_menu_page.dart';
 import '../services/balance_service.dart';
 import '../services/transaction_data.dart';
 import '../widgets/balance_card.dart';
@@ -28,6 +30,15 @@ class _BalanceScreenState extends State<BalanceScreen> {
   @override
   void initState() {
     super.initState();
+    _loadData();
+  }
+
+  Future<void> _openPage(Widget page) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => page),
+    );
+    if (!mounted) return;
     _loadData();
   }
 
@@ -81,9 +92,54 @@ class _BalanceScreenState extends State<BalanceScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    BalanceCard(
+                                        BalanceCard(
                       balance: _balance,
                       noRekening: _noRekening,
+                    ),
+                    const SizedBox(height: 14),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFFFE082),
+                              foregroundColor: AppColors.orange,
+                              elevation: 0,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            onPressed: () => _openPage(const TopUpMethodPage()),
+                            icon: const Icon(Icons.arrow_upward_rounded, size: 18),
+                            label: const Text(
+                              'Top Up',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.greenBtn,
+                              foregroundColor: AppColors.orange,
+                              elevation: 0,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            onPressed: () => _openPage(const TransferMenuPage()),
+                            icon: const Icon(Icons.swap_horiz_rounded, size: 18),
+                            label: const Text(
+                              'Transfer',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 16),
 
