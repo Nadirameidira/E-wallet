@@ -5,7 +5,7 @@ import '../../services/balance_service.dart';
 import '../../services/transaction_data.dart';
 import '../../utils/colors.dart';
 import '../../utils/formatter.dart';
-import '../screens/transfer/transfer_receipt_page.dart'; // <--- Import Struk Transfer
+import '../screens/transfer/transfer_receipt_page.dart'; 
 
 void showTransferPinDialog({
   required BuildContext context,
@@ -37,7 +37,7 @@ void showTransferPinDialog({
               errorMessage = '';
             });
 
-            // 1. Verifikasi PIN
+            // Verifikasi PIN
             final isPinValid = await AuthService.verifyPin(pinController.text);
 
             if (!isPinValid) {
@@ -49,7 +49,7 @@ void showTransferPinDialog({
               return;
             }
 
-            // 2. Cek Saldo
+            // Cek Saldo
             final currentBalance = await BalanceService.getBalance();
             final totalDeduction = amount + adminFee;
 
@@ -61,10 +61,10 @@ void showTransferPinDialog({
               return;
             }
 
-            // 3. Potong Saldo
+            // Potong Saldo
             await BalanceService.deductBalance(totalDeduction);
 
-            // 4. Buat objek Transaksi & Simpan ke Riwayat
+            // Buat objek Transaksi & Simpan ke Riwayat
             DateTime now = DateTime.now();
             String formattedDate = "${now.day}/${now.month}/${now.year}";
 
@@ -81,7 +81,7 @@ void showTransferPinDialog({
             if (!dialogContext.mounted) return;
             Navigator.pop(dialogContext); // Tutup Dialog PIN
 
-            // 5. Navigasi langsung ke Halaman Bukti Transfer
+            // Navigasi langsung ke Halaman Bukti Transfer
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(

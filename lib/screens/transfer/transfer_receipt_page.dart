@@ -19,7 +19,7 @@ class TransferReceiptPage extends StatelessWidget {
       backgroundColor: AppColors.bg,
       body: Stack(
         children: [
-          // === BEKAS JEJAK PAW ANIMATED & TRANSPARAN DI BACKGROUND ===
+          // background
           Positioned(
             top: 60,
             left: 30,
@@ -46,7 +46,7 @@ class TransferReceiptPage extends StatelessWidget {
             child: _AnimatedTransparentPaw(delayMs: 900, size: 42, angle: -0.2),
           ),
 
-          // === KONTEN UTAMA BUKTI TRANSFER ===
+          // bukti transfer
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(24),
@@ -181,7 +181,7 @@ class TransferReceiptPage extends StatelessWidget {
   }
 }
 
-// === HELPER WIDGET PAW NIMBUL SATU PER SATU DENGAN EFEK TRANSPARAN ===
+// widget paw
 class _AnimatedTransparentPaw extends StatelessWidget {
   final int delayMs;
   final double size;

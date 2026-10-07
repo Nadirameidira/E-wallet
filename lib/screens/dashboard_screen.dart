@@ -7,6 +7,7 @@ import 'welcome.dart';
 import 'balance_screen.dart';
 import 'bekind_screen.dart';
 import 'transfer/transfer_menu_page.dart';
+import 'profile_screen.dart'; 
 
 // Ini pake package path lengkap karena tujuannya untuk menghindari isu resolusi simbol pada kompiler Dartnya yahh
 import 'package:aplikasi_android_ewallet/screens/qr_scanner_screen.dart';
@@ -154,7 +155,12 @@ class DashboardScreen extends StatelessWidget {
                     icon: Icons.person,
                     label: 'Pawrofile',
                     color: const Color.fromARGB(255, 220, 237, 193),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                      );
+                    },
                   ),
                 ],
               ),
