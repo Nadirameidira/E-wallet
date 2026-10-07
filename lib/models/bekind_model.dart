@@ -2,9 +2,9 @@ class BeKindModel {
   final String code;
   final String creatorName;
   final int totalAmount;
-  final int remainingAmount;
+  int remainingAmount;
   final int totalSlots;
-  final int remainingSlots;
+  int remainingSlots; 
   final String message;
   final DateTime createdAt;
 
