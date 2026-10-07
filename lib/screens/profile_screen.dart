@@ -469,7 +469,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
 
-    // ambil dari data user yang login
+    // ambil dari data sesuai user yang login
     final nama = _user?.namaLengkap ?? '';
     final userId = _user?.userId ?? '';
     final noRek = _user?.noRekening ?? '';
