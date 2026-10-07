@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import '../utils/colors.dart';
 import '../utils/formatter.dart';
 
-/// Kartu saldo yang muncul di Dashboard, gayanya nyamain sama komponen
-/// lain di app ini (rounded 20, warna cream/oranye/kuning, aksen kucing).
 class BalanceCard extends StatefulWidget {
   final int balance;
   final String noRekening;
@@ -43,7 +41,6 @@ class _BalanceCardState extends State<BalanceCard> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // Paw print dekorasi transparan di pojok kanan atas, cuma pemanis
           Positioned(
             right: -10,
             top: -10,
@@ -93,7 +90,6 @@ class _BalanceCardState extends State<BalanceCard> {
               ),
               const SizedBox(height: 10),
 
-              // Nominal saldo gede di tengah
               Text(
                 _isHidden ? 'Rp •••••••' : 'Rp ${formatRupiah(widget.balance)}',
                 style: const TextStyle(
@@ -105,11 +101,9 @@ class _BalanceCardState extends State<BalanceCard> {
               ),
               const SizedBox(height: 18),
 
-              // Garis putus2 pemisah, biar kesan kayak struk/kartu rekening
               const _DashedDivider(),
               const SizedBox(height: 14),
-
-              // No. rekening di bagian bawah kartu
+              // Baris nomor rekening + tombol copycat
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -132,42 +126,46 @@ class _BalanceCardState extends State<BalanceCard> {
                       ),
                     ],
                   ),
-                  // Tombol Salin (Pengganti tulisan CATPAY statis)
-                  InkWell(
-                    onTap: () {
-                      // Menyalin teks nomor rekening ke clipboard
-                      Clipboard.setData(ClipboardData(text: widget.noRekening));
-    
-                      // Menampilkan notifikasi kecil (Snackbar) bahwa nomor berhasil disalin
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFFE082),
+                      foregroundColor: AppColors.orange,
+                      elevation: 3,
+                      shadowColor: Colors.black.withValues(alpha: 0.25),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
+                    ),
+                    onPressed: () {
+                      Clipboard.setData(
+                        ClipboardData(text: widget.noRekening),
+                      );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Nomor rekening berhasil disalin!'),
+                          content: Text('Nomor rekening berhasil disalin! 🐾'),
                           duration: Duration(seconds: 2),
                         ),
                       );
                     },
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(12),
-                        ),
-                        alignment: Alignment.center,
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                          Text(
-                            'copycat',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1,
-                            ),
+                    icon: const Icon(Icons.copy_rounded, size: 16),
+                    label: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'copycat',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.8,
                           ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(width: 4),
+                        Icon(Icons.pets, size: 12),
+                      ],
                     ),
                   ),
                 ],
@@ -180,7 +178,6 @@ class _BalanceCardState extends State<BalanceCard> {
   }
 }
 
-// Widget kecil buat bikin garis putus-putus horizontal
 class _DashedDivider extends StatelessWidget {
   const _DashedDivider();
 
