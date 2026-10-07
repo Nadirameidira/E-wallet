@@ -80,4 +80,30 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_keyLogin, false);
   }
+
+  // update pin baru
+  static Future<bool> updatePin(String pinBaru) async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_keyUser);
+    if (data == null) return false;
+
+    final user = UserModel.fromJson(jsonDecode(data));
+    
+    // Buat objek UserModel baru dengan PIN yang baru
+    final updatedUser = UserModel(
+      userId: user.userId,
+      namaLengkap: user.namaLengkap,
+      nik: user.nik,
+      noRekening: user.noRekening,
+      noHp: user.noHp,
+      email: user.email,
+      password: user.password,
+      pin: pinBaru,
+    );
+
+    // Simpan data user baru & pin transaksi secara bersamaan
+    await prefs.setString(_keyUser, jsonEncode(updatedUser.toJson()));
+    await prefs.setString(_keyPinTransaksi, pinBaru);
+    return true;
+  }
 }
