@@ -95,14 +95,15 @@ class _TopUpAmountPageState extends State<TopUpAmountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(255, 253, 245, 1),
+    resizeToAvoidBottomInset: true,
+    backgroundColor: const Color.fromRGBO(255, 253, 245, 1),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.orange),
-          onPressed: () => Navigator.pop(context),
-        ),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: AppColors.orange),
+        onPressed: () => Navigator.pop(context),
+      ),
         title: const Text(
           'Top Up',
           style: TextStyle(

@@ -30,7 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  mobile_scanner: ^5.2.3
   image_picker: ^1.1.2
+  qr_flutter: ^4.1.0
   intl: ^0.19.0
 
   # The following adds the Cupertino Icons font to your application.
