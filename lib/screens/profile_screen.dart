@@ -403,14 +403,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.email_outlined, color: AppColors.orange),
               title: const Text('Email CS', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-              subtitle: const Text('support@catpay.id', style: TextStyle(fontSize: 12)),
+              subtitle: const Text('support@cat(sh)t.id', style: TextStyle(fontSize: 12)),
               onTap: () {},
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.phone_in_talk_outlined, color: AppColors.orange),
               title: const Text('Call Center', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-              subtitle: const Text('0800-123-CATPAY (Jam Operasional 08.00 - 17.00)', style: TextStyle(fontSize: 12)),
+              subtitle: const Text('6688-6174 (Jam Operasional 08.00 - 17.00)', style: TextStyle(fontSize: 12)),
               onTap: () {},
             ),
           ],
@@ -469,7 +469,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
 
-    // Ambil data murni pengguna yang login tanpa fallback dummy
+    // ambil dari data user yang login
     final nama = _user?.namaLengkap ?? '';
     final userId = _user?.userId ?? '';
     final noRek = _user?.noRekening ?? '';
@@ -492,7 +492,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         children: [
-          // FOTO PROFIL & AVATAR
+          // foto profil/avatar
           Center(
             child: Stack(
               children: [
@@ -542,7 +542,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 20),
 
-          // KARTU TUNGGAL ORANYE BERSIFAT UNIFIED (MENYATU)
+          // card info pengguna
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
@@ -598,7 +598,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const Divider(color: Colors.white30, height: 24),
                 
-                // NO REKENING & TOMBOL SALIN
+                // no rekening dan salin rekeningnya
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -646,7 +646,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 24),
 
-          // LIST MENU PILIHAN
+          // list menu
           _buildMenuButton(
             icon: Icons.person,
             label: 'Data diri',
@@ -673,7 +673,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 12),
 
-          // KELUAR AKUN
+          // logout
           _buildMenuButton(
             icon: Icons.logout_rounded,
             label: 'Keluar Akun',
