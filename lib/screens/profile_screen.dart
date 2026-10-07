@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
@@ -173,7 +172,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _showDataDiriDialog() {
     final nama = _user?.namaLengkap ?? '';
     final userId = _user?.userId ?? '';
-    final noRek = _user?.noRekening ?? '';
     final noHp = _user?.noHp ?? '';
     final nik = _user?.nik ?? '';
 
@@ -200,7 +198,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _buildDataRow('User ID', '@$userId'),
             _buildDataRow('NIK', nik),
             _buildDataRow('No. HP', noHp),
-            _buildDataRow('No. Rekening', noRek),
             _buildDataRow('Status', 'Terverifikasi 🐾'),
           ],
         ),
@@ -403,14 +400,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.email_outlined, color: AppColors.orange),
               title: const Text('Email CS', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-              subtitle: const Text('support@cat(sh)t.id', style: TextStyle(fontSize: 12)),
+              subtitle: const Text('support@catpay.id', style: TextStyle(fontSize: 12)),
               onTap: () {},
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.phone_in_talk_outlined, color: AppColors.orange),
               title: const Text('Call Center', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-              subtitle: const Text('6688-6174 (Jam Operasional 08.00 - 17.00)', style: TextStyle(fontSize: 12)),
+              subtitle: const Text('0800-123-CATPAY (24 Jam)', style: TextStyle(fontSize: 12)),
               onTap: () {},
             ),
           ],
@@ -469,10 +466,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
 
-    // ambil dari data sesuai user yang login
     final nama = _user?.namaLengkap ?? '';
     final userId = _user?.userId ?? '';
-    final noRek = _user?.noRekening ?? '';
 
     return Scaffold(
       backgroundColor: AppColors.bg,
@@ -492,7 +487,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         children: [
-          // foto profil/avatar
+          // FOTO PROFIL & AVATAR
           Center(
             child: Stack(
               children: [
@@ -542,111 +537,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 20),
 
-          // card info pengguna
+          // card profile
           Container(
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: AppColors.orange,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            nama,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            '@$userId',
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFE082),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Text(
-                        'Terverifikasi 🐾',
-                        style: TextStyle(
-                          color: AppColors.orange,
-                          fontSize: 11,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        nama,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        '@$userId',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const Divider(color: Colors.white30, height: 24),
-                
-                // no rekening dan salin rekeningnya
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'No. Rekening CatPay',
-                          style: TextStyle(color: Colors.white70, fontSize: 11),
-                        ),
-                        Text(
-                          noRek,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                      ],
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFE082),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Text(
+                    'Terverifikasi 🐾',
+                    style: TextStyle(
+                      color: AppColors.orange,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
                     ),
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFFE082),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      ),
-                      onPressed: () {
-                        Clipboard.setData(ClipboardData(text: noRek));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('No. Rekening ($noRek) berhasil disalin! 🐾')),
-                        );
-                      },
-                      icon: const Icon(Icons.copy_rounded, color: AppColors.orange, size: 16),
-                      label: const Text(
-                        'Salin',
-                        style: TextStyle(color: AppColors.orange, fontWeight: FontWeight.bold, fontSize: 12),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 24),
 
-          // list menu
+          // LIST MENU PILIHAN
           _buildMenuButton(
             icon: Icons.person,
             label: 'Data diri',
@@ -673,7 +619,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 12),
 
-          // logout
+          // KELUAR AKUN
           _buildMenuButton(
             icon: Icons.logout_rounded,
             label: 'Keluar Akun',
