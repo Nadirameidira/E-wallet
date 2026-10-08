@@ -14,3 +14,4 @@ Project Ujian Tengah Semester membuat aplikasi mobile E-wallet.
 * **Dashboard:** Menu transaksi utama (Top Up, Transfer, Balance, History, BE KIND, Pawrofile).
 * **Top Up:** Form pengisian nominal dan pilihan metode pembayaran.
 * **History:** Mencatat riwayat transaksi per akun yang mencatat Top Up, Transfer, Payment(QRIS), BE KIND, dan dilengkapi filter kategori.
+* **Bekind:** Membuat dana kaget atau dana berbagi untuk sesama pengguna Ca(sh)t 
